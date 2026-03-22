@@ -66,6 +66,8 @@ export default function Footer() {
                 <a
                   key={social.label}
                   href="#"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   aria-label={social.label}
                   className="text-text-tertiary hover:text-white transition"
                 >
