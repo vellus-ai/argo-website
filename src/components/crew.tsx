@@ -1,11 +1,49 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Rocket, Zap, Search, Target, Compass, Wrench } from "lucide-react";
+import { Rocket, Search, Target, Compass, Wrench } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
+// Ship wheel (helm) icon — custom SVG matching Lucide style
+function ShipWheel({ className }: { className?: string }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      {/* Outer circle */}
+      <circle cx="12" cy="12" r="8" />
+      {/* Inner circle (hub) */}
+      <circle cx="12" cy="12" r="2" />
+      {/* 8 spokes with handles extending beyond outer circle */}
+      <line x1="12" y1="2" x2="12" y2="4" />
+      <line x1="12" y1="20" x2="12" y2="22" />
+      <line x1="2" y1="12" x2="4" y2="12" />
+      <line x1="20" y1="12" x2="22" y2="12" />
+      <line x1="4.93" y1="4.93" x2="6.34" y2="6.34" />
+      <line x1="17.66" y1="17.66" x2="19.07" y2="19.07" />
+      <line x1="4.93" y1="19.07" x2="6.34" y2="17.66" />
+      <line x1="17.66" y1="6.34" x2="19.07" y2="4.93" />
+      {/* Inner spokes */}
+      <line x1="12" y1="10" x2="12" y2="4" />
+      <line x1="12" y1="14" x2="12" y2="20" />
+      <line x1="10" y1="12" x2="4" y2="12" />
+      <line x1="14" y1="12" x2="20" y2="12" />
+    </svg>
+  );
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type IconComponent = LucideIcon | ((props: any) => React.ReactElement);
+
 interface Agent {
-  icon: LucideIcon;
+  icon: IconComponent;
   name: string;
   area: string;
   description: string;
@@ -20,7 +58,7 @@ const agents: Agent[] = [
       "Seu estrategista pessoal. Prioriza o que importa, analisa cenários e sugere os próximos passos.",
   },
   {
-    icon: Zap,
+    icon: ShipWheel,
     name: "Timoneiro",
     area: "Operações",
     description:
