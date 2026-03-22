@@ -36,7 +36,7 @@ export default function Hero() {
         {/* CTAs */}
         <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row">
           <a
-            href="#signup"
+            href="/checkout"
             className="glow rounded-lg bg-electric px-8 py-4 text-lg font-semibold text-white transition-colors hover:bg-electric/90"
           >
             🚀 Montar minha tripulação
