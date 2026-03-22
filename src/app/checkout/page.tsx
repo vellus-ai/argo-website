@@ -152,86 +152,32 @@ function CheckoutContent() {
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto px-4 py-8">
+      <main className="max-w-5xl mx-auto px-4 py-4">
         {/* Title */}
-        <div className="text-center mb-12">
-          <h1 className="text-3xl md:text-4xl font-bold text-text-primary mb-3">
+        <div className="text-center mb-6">
+          <h1 className="text-2xl md:text-3xl font-bold text-text-primary mb-2">
             Monte sua tripulação
           </h1>
-          <p className="text-text-secondary text-lg">
+          <p className="text-text-secondary">
             7 dias grátis. Sem cartão de crédito. Cancele quando quiser.
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-5 gap-8">
-          {/* Left column — Plan + Period */}
-          <div className="lg:col-span-3 space-y-6">
-            {/* Plan selection */}
-            <div>
-              <h2 className="text-sm font-semibold text-text-tertiary uppercase tracking-wider mb-4">
-                1. Escolha seu plano
-              </h2>
-              {plans.map((plan) => (
-                <button
-                  key={plan.id}
-                  onClick={() => setSelectedPlan(plan.id)}
-                  className={`w-full text-left rounded-xl border p-5 mb-3 transition-all cursor-pointer ${
-                    selectedPlan === plan.id
-                      ? "border-electric bg-navy-light shadow-lg shadow-electric/10"
-                      : "border-border bg-navy hover:border-border-light"
-                  }`}
-                >
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-3">
-                      <div
-                        className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                          selectedPlan === plan.id ? "border-electric bg-electric" : "border-text-tertiary"
-                        }`}
-                      >
-                        {selectedPlan === plan.id && <Check className="w-3 h-3 text-white" />}
-                      </div>
-                      <span className="text-lg font-semibold text-text-primary">{plan.name}</span>
-                      {plan.popular && (
-                        <span className="text-xs bg-electric/20 text-electric px-2 py-0.5 rounded-full font-medium">
-                          Popular
-                        </span>
-                      )}
-                    </div>
-                    {!isEnterprise && plan.id !== "enterprise" && (
-                      <div className="text-right">
-                        <span className="text-xl font-bold text-text-primary">
-                          R$ {calcPrice(BASE_PRICES[plan.id], currentPeriod.discount)}
-                        </span>
-                        <span className="text-text-tertiary text-sm">/mês</span>
-                      </div>
-                    )}
-                    {plan.id === "enterprise" && (
-                      <span className="text-text-secondary text-sm">Sob consulta</span>
-                    )}
-                  </div>
-                  <div className="flex flex-wrap gap-2 ml-8">
-                    {plan.features.map((f) => (
-                      <span key={f} className="text-xs text-text-secondary bg-midnight px-2 py-1 rounded">
-                        {f}
-                      </span>
-                    ))}
-                  </div>
-                </button>
-              ))}
-            </div>
-
-            {/* Billing period */}
+        <div className="grid lg:grid-cols-5 gap-6">
+          {/* Left column — Period FIRST, then Plan */}
+          <div className="lg:col-span-3 space-y-4">
+            {/* 1. Billing period FIRST */}
             {!isEnterprise && (
               <div>
-                <h2 className="text-sm font-semibold text-text-tertiary uppercase tracking-wider mb-4">
-                  2. Período de contratação
+                <h2 className="text-sm font-semibold text-text-tertiary uppercase tracking-wider mb-3">
+                  1. Período de contratação
                 </h2>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                   {periods.map((p) => (
                     <button
                       key={p.key}
                       onClick={() => setBillingPeriod(p.key)}
-                      className={`relative cursor-pointer rounded-xl border p-4 text-center transition-all ${
+                      className={`relative cursor-pointer rounded-lg border p-3 text-center transition-all ${
                         billingPeriod === p.key
                           ? "border-electric bg-navy-light shadow-lg shadow-electric/10"
                           : "border-border bg-navy hover:border-border-light"
@@ -243,34 +189,83 @@ function CheckoutContent() {
                         </span>
                       )}
                       <span className="block text-sm font-semibold text-text-primary">{p.label}</span>
-                      {p.discount > 0 && (
-                        <span className="block text-xs text-emerald mt-1">
-                          R$ {calcPrice(basePrice, p.discount)}/mês
-                        </span>
-                      )}
-                      {p.discount === 0 && (
-                        <span className="block text-xs text-text-tertiary mt-1">
-                          R$ {basePrice}/mês
-                        </span>
-                      )}
+                      <span className={`block text-xs mt-0.5 ${p.discount > 0 ? "text-emerald" : "text-text-tertiary"}`}>
+                        {p.discount > 0 ? `R$ ${calcPrice(basePrice, p.discount)}/mês` : `R$ ${basePrice}/mês`}
+                      </span>
                     </button>
                   ))}
                 </div>
                 {currentPeriod.discount > 0 && (
-                  <p className="text-emerald text-xs mt-3 flex items-center gap-1">
+                  <p className="text-emerald text-xs mt-2 flex items-center gap-1">
                     <Zap className="w-3 h-3" />
-                    Você economiza R$ {(basePrice - monthlyPrice) * currentPeriod.months} no período{" "}
-                    {currentPeriod.label.toLowerCase()}
+                    Economize {currentPeriod.discount}% — R$ {(basePrice - monthlyPrice) * currentPeriod.months} no período
                   </p>
                 )}
               </div>
             )}
+
+            {/* 2. Plan selection */}
+            <div>
+              <h2 className="text-sm font-semibold text-text-tertiary uppercase tracking-wider mb-3">
+                2. Escolha seu plano
+              </h2>
+              {plans.map((plan) => (
+                <button
+                  key={plan.id}
+                  onClick={() => setSelectedPlan(plan.id)}
+                  className={`w-full text-left rounded-lg border p-4 mb-2 transition-all cursor-pointer ${
+                    selectedPlan === plan.id
+                      ? "border-electric bg-navy-light shadow-lg shadow-electric/10"
+                      : "border-border bg-navy hover:border-border-light"
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
+                          selectedPlan === plan.id ? "border-electric bg-electric" : "border-text-tertiary"
+                        }`}
+                      >
+                        {selectedPlan === plan.id && <Check className="w-2.5 h-2.5 text-white" />}
+                      </div>
+                      <span className="text-base font-semibold text-text-primary">{plan.name}</span>
+                      {plan.popular && (
+                        <span className="text-[10px] bg-electric/20 text-electric px-2 py-0.5 rounded-full font-medium">
+                          Popular
+                        </span>
+                      )}
+                    </div>
+                    {plan.id !== "enterprise" && (
+                      <div className="text-right">
+                        {currentPeriod.discount > 0 && (
+                          <span className="text-xs text-text-tertiary line-through mr-1">R$ {BASE_PRICES[plan.id]}</span>
+                        )}
+                        <span className="text-lg font-bold text-text-primary">
+                          R$ {calcPrice(BASE_PRICES[plan.id], currentPeriod.discount)}
+                        </span>
+                        <span className="text-text-tertiary text-xs">/mês</span>
+                      </div>
+                    )}
+                    {plan.id === "enterprise" && (
+                      <span className="text-text-secondary text-sm">Sob consulta</span>
+                    )}
+                  </div>
+                  <div className="flex flex-wrap gap-1.5 ml-7">
+                    {plan.features.map((f) => (
+                      <span key={f} className="text-[11px] text-text-secondary bg-midnight px-2 py-0.5 rounded">
+                        {f}
+                      </span>
+                    ))}
+                  </div>
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Right column — Form + Summary */}
           <div className="lg:col-span-2">
-            <div className="rounded-xl border border-border bg-navy p-6 sticky top-24">
-              <h2 className="text-sm font-semibold text-text-tertiary uppercase tracking-wider mb-6">
+            <div className="rounded-xl border border-border bg-navy p-5 sticky top-20">
+              <h2 className="text-sm font-semibold text-text-tertiary uppercase tracking-wider mb-4">
                 {isEnterprise ? "Contato comercial" : "3. Seus dados"}
               </h2>
 
