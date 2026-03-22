@@ -1,8 +1,11 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 export default function CTABanner() {
+  const t = useTranslations("ctaBanner");
+
   return (
     <section className="py-24 px-4">
       <motion.div
@@ -13,10 +16,10 @@ export default function CTABanner() {
         className="bg-gradient-to-r from-electric to-cyan rounded-3xl mx-4 md:mx-auto max-w-5xl p-12 text-center"
       >
         <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-          Pronto para montar sua tripulação?
+          {t("title")}
         </h2>
         <p className="text-white/80 text-lg mb-8 max-w-2xl mx-auto">
-          7 dias grátis. Sem cartão de crédito. Sem complicação.
+          {t("subtitle")}
         </p>
 
         <motion.button
@@ -24,11 +27,11 @@ export default function CTABanner() {
           whileTap={{ scale: 0.98 }}
           className="bg-white text-electric font-semibold rounded-lg px-8 py-4 text-lg hover:bg-gray-100 transition-colors cursor-pointer"
         >
-          Começar agora &rarr;
+          {t("cta")} &rarr;
         </motion.button>
 
         <p className="text-white/60 text-sm mt-6">
-          Setup em 5 minutos. Cancele quando quiser.
+          {t("footer")}
         </p>
       </motion.div>
     </section>

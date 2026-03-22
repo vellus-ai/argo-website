@@ -1,0 +1,464 @@
+{
+  "header": {
+    "nav": {
+      "produto": "Produto",
+      "precos": "Preços",
+      "docs": "Docs",
+      "blog": "Blog",
+      "sobre": "Sobre"
+    },
+    "login": "Login",
+    "startFree": "Comece Grátis",
+    "toggleMenu": "Toggle menu",
+    "language": "Idioma"
+  },
+  "hero": {
+    "badge": "Trial gratuito de 7 dias — promoção por tempo limitado",
+    "title": "Sua tripulação de IA.",
+    "subtitle": "Cada profissional merece uma equipe inteira de agentes inteligentes. O ARGO monta a sua em 5 minutos.",
+    "cta": "Montar minha tripulação",
+    "demo": "Veja uma demo →",
+    "trustLine": "Sem cartão de crédito. Cancele quando quiser.",
+    "stats": {
+      "agents": "agentes",
+      "languages": "idiomas",
+      "providers": "provedores LLM",
+      "setup": "setup"
+    }
+  },
+  "socialProof": {
+    "headline": "Confiado por equipes que constroem o futuro",
+    "company": "Empresa"
+  },
+  "crew": {
+    "title": "Conheça sua tripulação",
+    "subtitle": "Seis agentes especializados. Um objetivo: fazer você render mais.",
+    "footerNote": "Cada agente evolui com você. Quanto mais usa, mais inteligente fica.",
+    "agents": {
+      "captain": {
+        "name": "Capitão",
+        "area": "Estratégia",
+        "description": "Seu estrategista pessoal. Prioriza o que importa, analisa cenários e sugere os próximos passos."
+      },
+      "helmsman": {
+        "name": "Timoneiro",
+        "area": "Operações",
+        "description": "Operações sob controle. Gerencia tarefas, prazos e processos. Nada escapa."
+      },
+      "lookout": {
+        "name": "Vigia",
+        "area": "Pesquisa",
+        "description": "Pesquisa em profundidade. Investiga mercados, analisa concorrentes e entrega relatórios."
+      },
+      "gunner": {
+        "name": "Artilheiro",
+        "area": "Dados/Finanças",
+        "description": "Números que fazem sentido. Dashboards, KPIs, P&L, fluxo de caixa."
+      },
+      "navigator": {
+        "name": "Navegador",
+        "area": "Jurídico",
+        "description": "Segurança jurídica. Revisa contratos, checa compliance e cuida da LGPD."
+      },
+      "blacksmith": {
+        "name": "Ferreiro",
+        "area": "Engenharia",
+        "description": "Código que funciona. Arquitetura, code review, DevOps e deploy."
+      }
+    }
+  },
+  "howItWorks": {
+    "title": "Do zero à sua tripulação em 5 minutos",
+    "subtitle": "Três passos. Sem instalação. Sem complicação.",
+    "steps": {
+      "step1": {
+        "title": "CONTRATE",
+        "description": "Escolha seu plano e crie sua conta com trial de 7 dias. Sem cartão, sem compromisso."
+      },
+      "step2": {
+        "title": "CONFIGURE",
+        "description": "Conecte sua IA preferida (OpenAI, Claude, Gemini) ou use a nossa. Personalize nome, personalidade e canais."
+      },
+      "step3": {
+        "title": "COMANDE",
+        "description": "Fale com seus agentes pelo Telegram, WhatsApp, Teams ou direto no dashboard. Eles já estão prontos."
+      }
+    }
+  },
+  "features": {
+    "title": "Tudo que sua equipe de IA precisa",
+    "subtitle": "Ferramentas poderosas, experiência simples.",
+    "items": {
+      "teamwork": {
+        "title": "Trabalho em equipe",
+        "description": "Seus agentes colaboram entre si com task board e delegação."
+      },
+      "byok": {
+        "title": "Sua chave, seu controle",
+        "description": "Traga sua API key (OpenAI, Anthropic, Google) ou use nosso provedor incluso. Sem vendor lock-in."
+      },
+      "channels": {
+        "title": "Onde você já está",
+        "description": "Telegram, WhatsApp, Teams, Slack, Discord ou dashboard web."
+      },
+      "whitelabel": {
+        "title": "Sua marca, sua cara",
+        "description": "Logo, cores, domínio personalizado. Seus clientes veem a sua marca."
+      },
+      "learning": {
+        "title": "Fica mais esperto",
+        "description": "Cada conversa ensina algo novo. O agente adapta tom, preferências e expertise."
+      },
+      "plugins": {
+        "title": "Expanda sem limites",
+        "description": "Plugins para CRM, finanças, calendário, propostas e mais."
+      }
+    }
+  },
+  "pricing": {
+    "title": "Planos que crescem com você",
+    "subtitle": "Teste grátis por 7 dias. Sem cartão de crédito.",
+    "promo": "Promoção por tempo limitado — trial de 7 dias grátis",
+    "periods": {
+      "monthly": "Mensal",
+      "semiannual": "Semestral",
+      "annual": "Anual",
+      "biennial": "2 anos"
+    },
+    "savingsBanner": "Economize {discount}% em qualquer plano pagando {frequency}",
+    "frequency": {
+      "semiannually": "semestralmente",
+      "annually": "anualmente",
+      "biennially": "a cada 2 anos"
+    },
+    "perMonth": "/mês",
+    "onRequest": "Sob consulta",
+    "billedEvery": "Cobrado R$ {total} a cada {months} meses",
+    "plans": {
+      "starter": {
+        "name": "Starter",
+        "tagline": "Para empreendedores e profissionais autônomos",
+        "cta": "Teste grátis por 7 dias",
+        "features": [
+          "3 agentes IA",
+          "1 usuário",
+          "Telegram + WhatsApp + Web",
+          "Agent Teams (task board)",
+          "BYOK (traga sua chave API)",
+          "5 GB storage",
+          "Container compartilhado",
+          "Suporte por email"
+        ]
+      },
+      "pro": {
+        "name": "Pro",
+        "tagline": "Para equipes que querem resultados",
+        "cta": "Teste grátis por 7 dias",
+        "badge": "Mais popular",
+        "features": [
+          "10 agentes IA",
+          "5 usuários",
+          "Todos os canais",
+          "Agent Teams + Delegação",
+          "White-label básico",
+          "Prompt caching (até 90% economia)",
+          "20 GB storage",
+          "Container dedicado (2 vCPU, 4 GB RAM)",
+          "Suporte prioritário"
+        ]
+      },
+      "enterprise": {
+        "name": "Enterprise",
+        "tagline": "Para empresas que exigem o máximo",
+        "cta": "Falar com vendas",
+        "features": [
+          "Agentes ilimitados",
+          "Usuários ilimitados",
+          "White-label completo + domínio próprio",
+          "KVM dedicada (isolamento total)",
+          "Storage ilimitado",
+          "SLA 99.9% com suporte dedicado",
+          "Onboarding assistido",
+          "Integrações customizadas"
+        ]
+      }
+    },
+    "footer": "Todos os planos incluem: criptografia AES-256, LGPD compliance, atualizações automáticas e 99.9% uptime. Cancele quando quiser.",
+    "taxNote": "Os preços exibidos não incluem impostos ou taxas aplicáveis (como IVA ou imposto sobre vendas), a menos que explicitamente indicado. Infraestrutura baseada em KVM (Kernel-based Virtual Machine) no Google Cloud."
+  },
+  "testimonials": {
+    "title": "Quem usa, recomenda",
+    "items": {
+      "marina": {
+        "quote": "O Capitão me economiza 2h por dia só em priorização. É como ter um sócio que nunca dorme.",
+        "name": "Marina Costa",
+        "role": "CEO, TechFlow"
+      },
+      "rafael": {
+        "quote": "Antes eu gastava a manhã em relatórios. O Artilheiro entrega em 30 segundos.",
+        "name": "Rafael Mendes",
+        "role": "CFO, Pitflow"
+      },
+      "juliana": {
+        "quote": "O Navegador encontrou 3 cláusulas de risco que nosso advogado deixou passar.",
+        "name": "Juliana Alves",
+        "role": "COO, DataBridge"
+      }
+    }
+  },
+  "faq": {
+    "title": "Perguntas frequentes",
+    "subtitle": "Tudo o que você precisa saber antes de começar.",
+    "items": {
+      "whatIs": {
+        "question": "O que é o ARGO?",
+        "answer": "ARGO é uma plataforma que dá a cada profissional uma equipe de agentes de IA especializados: estratégia, operações, pesquisa, dados, jurídico e engenharia."
+      },
+      "coding": {
+        "question": "Preciso saber programar?",
+        "answer": "Não. O setup leva 5 minutos e é 100% visual. Você conversa com seus agentes como conversa com um colega."
+      },
+      "byok": {
+        "question": "O que é BYOK?",
+        "answer": "BYOK significa Bring Your Own Key. Você conecta sua conta da OpenAI, Anthropic, Google ou outro provedor. Controle custos e escolha o modelo."
+      },
+      "security": {
+        "question": "Meus dados estão seguros?",
+        "answer": "Sim. Criptografia AES-256-GCM, autenticação PCI DSS, LGPD compliant. Dados isolados por empresa."
+      },
+      "cancel": {
+        "question": "Posso cancelar a qualquer momento?",
+        "answer": "Sim, sem multa e sem burocracia. Cancele direto no dashboard."
+      },
+      "trial": {
+        "question": "O trial precisa de cartão?",
+        "answer": "Não. 7 dias grátis sem cartão. Só pedimos pagamento quando decidir continuar."
+      },
+      "whitelabel": {
+        "question": "Como funciona o white-label?",
+        "answer": "No Pro: logo e cores. No Enterprise: domínio próprio e email personalizado."
+      },
+      "languages": {
+        "question": "Os agentes falam português?",
+        "answer": "Sim! 8 idiomas: pt-BR, en-US, es-ES, fr-FR, it-IT, de-DE, vi, zh."
+      }
+    }
+  },
+  "ctaBanner": {
+    "title": "Pronto para montar sua tripulação?",
+    "subtitle": "7 dias grátis. Sem cartão de crédito. Sem complicação.",
+    "cta": "Começar agora",
+    "footer": "Setup em 5 minutos. Cancele quando quiser."
+  },
+  "footer": {
+    "columns": {
+      "product": {
+        "title": "Produto",
+        "links": ["Funcionalidades", "Preços", "Changelog", "Status"]
+      },
+      "company": {
+        "title": "Empresa",
+        "links": ["Sobre nós", "Blog", "Carreiras", "Contato"]
+      },
+      "resources": {
+        "title": "Recursos",
+        "links": ["Documentação", "API", "Marketplace", "Comunidade"]
+      },
+      "legal": {
+        "title": "Legal",
+        "links": ["Termos de Uso", "Privacidade", "LGPD", "Cookies"]
+      }
+    },
+    "byVellus": "by Vellus",
+    "copyright": "2026 Vellus Tecnologia",
+    "madeIn": "Feito com {rocket} no Brasil"
+  },
+  "checkout": {
+    "secureEnvironment": "Ambiente seguro",
+    "title": "Monte sua tripulação",
+    "subtitle": "7 dias grátis. Sem cartão de crédito. Cancele quando quiser.",
+    "step1": "1. Período de contratação",
+    "step2": "2. Escolha seu plano",
+    "step3": "3. Seus dados",
+    "contactSales": "Contato comercial",
+    "popular": "Popular",
+    "onRequest": "Sob consulta",
+    "perMonth": "mês",
+    "periods": {
+      "monthly": "Mensal",
+      "semiannual": "Semestral",
+      "annual": "Anual",
+      "biennial": "2 anos"
+    },
+    "saveBanner": "Economize {discount}% — R$ {amount} no período",
+    "savings": {
+      "semiannually": "semestralmente",
+      "annually": "anualmente",
+      "biennially": "a cada 2 anos"
+    },
+    "plans": {
+      "starter": {
+        "name": "Starter",
+        "features": ["3 agentes IA", "1 usuário", "5 GB storage", "Telegram + WhatsApp + Web", "BYOK", "Agent Teams"]
+      },
+      "pro": {
+        "name": "Pro",
+        "features": ["10 agentes IA", "5 usuários", "20 GB storage", "Todos os canais", "White-label", "Agent Teams + Delegação", "Container dedicado"]
+      },
+      "enterprise": {
+        "name": "Enterprise",
+        "features": ["Agentes ilimitados", "Usuários ilimitados", "Storage ilimitado", "KVM dedicada", "SLA 99.9%", "SSO/SAML"]
+      }
+    },
+    "form": {
+      "fullName": "Nome completo",
+      "email": "Email profissional",
+      "company": "Empresa",
+      "optional": "opcional"
+    },
+    "summary": {
+      "plan": "Plano",
+      "period": "Período",
+      "monthlyValue": "Valor mensal",
+      "totalPeriod": "Total período",
+      "trialFree": "7 dias grátis",
+      "todayYouPay": "Hoje você paga"
+    },
+    "submitting": "Preparando sua tripulação...",
+    "startTrial": "Iniciar trial gratuito",
+    "talkToSales": "Falar com vendas",
+    "terms": {
+      "prefix": "Ao continuar, você concorda com os",
+      "termsOfUse": "Termos de Uso",
+      "and": "e",
+      "privacyPolicy": "Política de Privacidade",
+      "afterTrial": "Após o trial, será cobrado R$ {monthlyPrice}/mês{totalPrice, plural, =0 {} other { (R$ {totalPrice} a cada {months} meses)}}."
+    },
+    "trust": {
+      "encryption": "Dados protegidos com criptografia AES-256",
+      "setup": "Setup em menos de 5 minutos"
+    },
+    "faqTitle": "Perguntas frequentes sobre cobrança",
+    "faqs": {
+      "billing": {
+        "q": "Como funciona a cobrança?",
+        "a": "Você começa com 7 dias grátis. Após o trial, a cobrança é feita automaticamente no cartão de crédito no período escolhido (mensal, semestral, anual ou bienal). Quanto maior o compromisso, maior o desconto — até 20% no plano bienal."
+      },
+      "upgrade": {
+        "q": "Posso fazer upgrade ou downgrade?",
+        "a": "Sim. Você pode alterar seu plano a qualquer momento nas configurações de pagamento. No upgrade, o valor é ajustado proporcionalmente (pro rata). No downgrade, a mudança entra em vigor no próximo ciclo de cobrança."
+      },
+      "cancel": {
+        "q": "Posso cancelar a qualquer momento?",
+        "a": "Sim. Não há multa de cancelamento. Seu acesso continua até o final do período já pago. Após o cancelamento, seus dados ficam retidos por 30 dias para eventual reativação."
+      },
+      "taxes": {
+        "q": "Os preços incluem impostos?",
+        "a": "Os preços exibidos não incluem impostos ou taxas aplicáveis (como IVA ou imposto sobre vendas), a menos que explicitamente indicado. O valor final será calculado na etapa de pagamento conforme sua localização."
+      },
+      "limits": {
+        "q": "O que acontece se eu exceder os limites do plano?",
+        "a": "Você recebe uma notificação quando atingir 80% da capacidade. Ao atingir o limite, novos agentes não podem ser criados. Recomendamos fazer upgrade — sem perda de dados ou configurações."
+      },
+      "infrastructure": {
+        "q": "Qual a infraestrutura por trás do ARGO?",
+        "a": "O ARGO roda em infraestrutura Google Cloud com virtualização KVM (Kernel-based Virtual Machine). No plano Starter, seu ambiente compartilha recursos com isolamento por container. No Pro, você tem um container dedicado (2 vCPU, 4 GB RAM). No Enterprise, uma KVM dedicada com recursos exclusivos."
+      },
+      "security": {
+        "q": "Meus dados estão seguros?",
+        "a": "Sim. Criptografia AES-256-GCM para dados em repouso, TLS 1.3 em trânsito. Chaves API (BYOK) são encriptadas e nunca expostas em logs. Compliance com LGPD e SOC 2 (em andamento)."
+      }
+    },
+    "taxDisclaimer": "Os preços exibidos não incluem impostos ou taxas aplicáveis (como IVA ou imposto sobre vendas), a menos que explicitamente indicado. Infraestrutura baseada em KVM (Kernel-based Virtual Machine) no Google Cloud Platform."
+  },
+  "welcome": {
+    "noRecord": "Nenhum registro encontrado.",
+    "goToCheckout": "Ir para o checkout",
+    "trialActivated": "Trial ativado com sucesso!",
+    "welcomeTitle": "Bem-vindo a bordo, Capitão {firstName}!",
+    "welcomeSubtitle": "Sua tripulação está sendo preparada. Use as credenciais abaixo para acessar sua ponte de comando.",
+    "credentials": {
+      "title": "Suas credenciais de acesso",
+      "dashboard": "Ponte de Comando (Dashboard)",
+      "copy": "Copiar",
+      "emailSent": "Enviamos essas credenciais para",
+      "tokenWarning": "Guarde o token em local seguro. Ele será necessário no primeiro acesso."
+    },
+    "trialSummary": {
+      "title": "Resumo do trial",
+      "plan": "Plano",
+      "period": "Período",
+      "freeTrialDays": "7 dias grátis",
+      "company": "Empresa"
+    },
+    "nextSteps": {
+      "title": "Próximos passos",
+      "step1": {
+        "title": "Acesse sua ponte de comando",
+        "description": "Abra o link acima e insira seu User ID + Token"
+      },
+      "step2": {
+        "title": "Configure seu login permanente",
+        "description": "Crie email + senha no primeiro acesso (o token expira em 24h)"
+      },
+      "step3": {
+        "title": "Monte sua tripulação",
+        "description": "O setup guiado vai te ajudar a criar seu primeiro agente em 5 minutos"
+      }
+    },
+    "accessDashboard": "Acessar minha ponte de comando",
+    "needHelp": "Precisa de ajuda?"
+  },
+  "admin": {
+    "login": {
+      "subtitle": "Portal Administrativo",
+      "authenticating": "Autenticando...",
+      "enter": "Entrar"
+    },
+    "errors": {
+      "invalidKey": "API Key inválida",
+      "fetchError": "Erro ao buscar dados",
+      "unknown": "Erro desconhecido"
+    },
+    "dashboard": {
+      "refresh": "Atualizar",
+      "logout": "Sair",
+      "byPlan": "Por Plano",
+      "noTenants": "Nenhum tenant ainda",
+      "vmCapacity": "Capacidade VM",
+      "autoProvisioning": "Auto-provisioning nova VM aos 80% ({threshold} tenants)",
+      "expiringTrials": "Trials Expirando",
+      "noExpiringTrials": "Nenhum trial expirando em 3 dias",
+      "lastUpdate": "Última atualização",
+      "noTenantsRegistered": "Nenhum tenant registrado ainda. Aguardando primeiro checkout.",
+      "footer": "ARGO Admin Portal — Dados atualizados em tempo real via Provisioning API"
+    },
+    "kpi": {
+      "totalTenants": "Total Tenants",
+      "active": "Ativos",
+      "inTrial": "Em Trial",
+      "suspended": "Suspensos",
+      "activeVMs": "VMs Ativas"
+    },
+    "table": {
+      "company": "Empresa",
+      "plan": "Plano",
+      "period": "Período",
+      "monthlyValue": "Valor/mês",
+      "created": "Criado",
+      "expired": "Expirado",
+      "maxAgents": "Max Agentes",
+      "maxUsers": "Max Usuários"
+    }
+  },
+  "common": {
+    "languages": {
+      "pt-BR": "Português (Brasil)",
+      "en-US": "English (US)",
+      "es-ES": "Español",
+      "fr-FR": "Français",
+      "it-IT": "Italiano",
+      "de-DE": "Deutsch"
+    }
+  }
+}
