@@ -1,15 +1,18 @@
 "use client";
 
 import { motion } from "framer-motion";
-
-const stats = [
-  { value: "6", label: "agentes" },
-  { value: "8", label: "idiomas" },
-  { value: "13+", label: "provedores LLM" },
-  { value: "5 min", label: "setup" },
-];
+import { useTranslations } from "next-intl";
 
 export default function Hero() {
+  const t = useTranslations("hero");
+
+  const stats = [
+    { value: "6", label: t("stats.agents") },
+    { value: "8", label: t("stats.languages") },
+    { value: "13+", label: t("stats.providers") },
+    { value: "5 min", label: t("stats.setup") },
+  ];
+
   return (
     <section className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[radial-gradient(ellipse_at_center,var(--color-navy)_0%,var(--color-midnight)_70%)] px-4 pt-16">
       <motion.div
@@ -20,17 +23,17 @@ export default function Hero() {
       >
         {/* Badge */}
         <span className="mb-6 inline-block rounded-full bg-amber-500/10 px-4 py-1.5 text-sm font-medium text-amber-400">
-          ⏰ Trial gratuito de 7 dias — promoção por tempo limitado
+          {t("badge")}
         </span>
 
         {/* H1 */}
         <h1 className="text-5xl font-bold leading-tight text-white md:text-7xl">
-          Sua tripulação de IA.
+          {t("title")}
         </h1>
 
         {/* Subtitle */}
         <p className="mt-6 max-w-2xl text-xl text-text-secondary">
-          Cada profissional merece uma equipe inteira de agentes inteligentes. O ARGO monta a sua em 5 minutos.
+          {t("subtitle")}
         </p>
 
         {/* CTAs */}
@@ -39,19 +42,19 @@ export default function Hero() {
             href="/checkout"
             className="glow rounded-lg bg-electric px-8 py-4 text-lg font-semibold text-white transition-colors hover:bg-electric/90"
           >
-            🚀 Montar minha tripulação
+            {t("cta")}
           </a>
           <a
             href="#demo"
             className="rounded-lg border border-border-light px-6 py-3 text-white transition-colors hover:bg-white/5"
           >
-            Veja uma demo →
+            {t("demo")}
           </a>
         </div>
 
         {/* Trust line */}
         <p className="mt-4 text-sm text-text-tertiary">
-          Sem cartão de crédito. Cancele quando quiser.
+          {t("trustLine")}
         </p>
 
         {/* Stats */}

@@ -1,15 +1,17 @@
 "use client";
 
 import { Building2 } from "lucide-react";
-
-const logos = Array.from({ length: 6 }, (_, i) => `Empresa ${i + 1}`);
+import { useTranslations } from "next-intl";
 
 export default function SocialProof() {
+  const t = useTranslations("socialProof");
+  const logos = Array.from({ length: 6 }, (_, i) => `${t("company")} ${i + 1}`);
+
   return (
     <section className="border-y border-border bg-navy/50 py-12 px-4">
       <div className="mx-auto max-w-7xl">
         <p className="mb-8 text-center text-sm uppercase tracking-wider text-text-tertiary">
-          Confiado por equipes que constroem o futuro
+          {t("headline")}
         </p>
 
         <div className="flex flex-wrap items-center justify-center gap-10 md:gap-16">

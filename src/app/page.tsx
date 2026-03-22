@@ -1,31 +1,7 @@
-import Header from "@/components/header";
-import Hero from "@/components/hero";
-import SocialProof from "@/components/social-proof";
-import Crew from "@/components/crew";
-import HowItWorks from "@/components/how-it-works";
-import Features from "@/components/features";
-import Pricing from "@/components/pricing";
-import Testimonials from "@/components/testimonials";
-import FAQ from "@/components/faq";
-import CTABanner from "@/components/cta-banner";
-import Footer from "@/components/footer";
+// This file is kept for compatibility. The middleware redirects / to /[defaultLocale].
+// If somehow reached without middleware, redirect manually.
+import { redirect } from "next/navigation";
 
-export default function Home() {
-  return (
-    <>
-      <Header />
-      <main>
-        <Hero />
-        <SocialProof />
-        <Crew />
-        <HowItWorks />
-        <Features />
-        <Pricing />
-        <Testimonials />
-        <FAQ />
-        <CTABanner />
-      </main>
-      <Footer />
-    </>
-  );
+export default function RootPage() {
+  redirect("/pt-BR");
 }

@@ -3,22 +3,22 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, Zap } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 type BillingPeriod = "monthly" | "semiannual" | "annual" | "biennial";
 
 interface PeriodOption {
   key: BillingPeriod;
-  label: string;
   months: number;
-  discount: number; // percentage
+  discount: number;
   badge?: string;
 }
 
 const periods: PeriodOption[] = [
-  { key: "monthly", label: "Mensal", months: 1, discount: 0 },
-  { key: "semiannual", label: "Semestral", months: 6, discount: 10, badge: "-10%" },
-  { key: "annual", label: "Anual", months: 12, discount: 15, badge: "-15%" },
-  { key: "biennial", label: "2 anos", months: 24, discount: 20, badge: "-20%" },
+  { key: "monthly", months: 1, discount: 0 },
+  { key: "semiannual", months: 6, discount: 10, badge: "-10%" },
+  { key: "annual", months: 12, discount: 15, badge: "-15%" },
+  { key: "biennial", months: 24, discount: 20, badge: "-20%" },
 ];
 
 const BASE_PRICES = {
@@ -30,71 +30,7 @@ function calcPrice(base: number, discount: number): number {
   return Math.round(base * (1 - discount / 100));
 }
 
-interface PlanProps {
-  name: string;
-  basePrice: number;
-  tagline: string;
-  features: string[];
-  cta: string;
-  highlighted?: boolean;
-  badge?: string;
-  isEnterprise?: boolean;
-}
-
-const plans: PlanProps[] = [
-  {
-    name: "Starter",
-    basePrice: BASE_PRICES.starter,
-    tagline: "Para empreendedores e profissionais autônomos",
-    features: [
-      "3 agentes IA",
-      "1 usuário",
-      "Telegram + WhatsApp + Web",
-      "Agent Teams (task board)",
-      "BYOK (traga sua chave API)",
-      "5 GB storage",
-      "Container compartilhado",
-      "Suporte por email",
-    ],
-    cta: "Teste grátis por 7 dias",
-  },
-  {
-    name: "Pro",
-    basePrice: BASE_PRICES.pro,
-    tagline: "Para equipes que querem resultados",
-    features: [
-      "10 agentes IA",
-      "5 usuários",
-      "Todos os canais",
-      "Agent Teams + Delegação",
-      "White-label básico",
-      "Prompt caching (até 90% economia)",
-      "20 GB storage",
-      "Container dedicado (2 vCPU, 4 GB RAM)",
-      "Suporte prioritário",
-    ],
-    cta: "🚀 Teste grátis por 7 dias",
-    highlighted: true,
-    badge: "⭐ Mais popular",
-  },
-  {
-    name: "Enterprise",
-    basePrice: 0,
-    tagline: "Para empresas que exigem o máximo",
-    features: [
-      "Agentes ilimitados",
-      "Usuários ilimitados",
-      "White-label completo + domínio próprio",
-      "KVM dedicada (isolamento total)",
-      "Storage ilimitado",
-      "SLA 99.9% com suporte dedicado",
-      "Onboarding assistido",
-      "Integrações customizadas",
-    ],
-    cta: "Falar com vendas",
-    isEnterprise: true,
-  },
-];
+const planKeys = ["starter", "pro", "enterprise"] as const;
 
 const containerVariants = {
   hidden: {},
@@ -107,8 +43,15 @@ const cardVariants = {
 };
 
 export default function Pricing() {
+  const t = useTranslations("pricing");
   const [period, setPeriod] = useState<BillingPeriod>("monthly");
   const currentPeriod = periods.find((p) => p.key === period)!;
+
+  const frequencyLabel = () => {
+    if (currentPeriod.months === 6) return t("frequency.semiannually");
+    if (currentPeriod.months === 12) return t("frequency.annually");
+    return t("frequency.biennially");
+  };
 
   return (
     <section id="pricing" className="py-24 px-4">
@@ -121,13 +64,13 @@ export default function Pricing() {
           className="text-center mb-12"
         >
           <h2 className="text-4xl font-bold text-text-primary mb-4">
-            Planos que crescem com você
+            {t("title")}
           </h2>
           <p className="text-text-secondary text-lg mb-2">
-            Teste grátis por 7 dias. Sem cartão de crédito.
+            {t("subtitle")}
           </p>
           <p className="text-amber text-sm font-medium">
-            ⏰ Promoção por tempo limitado — trial de 7 dias grátis
+            {t("promo")}
           </p>
         </motion.div>
 
@@ -149,7 +92,7 @@ export default function Pricing() {
                   : "bg-navy border border-border text-text-secondary hover:border-electric/50"
               }`}
             >
-              {p.label}
+              {t(`periods.${p.key}`)}
               {p.badge && (
                 <span className="absolute -top-2 -right-2 bg-emerald text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold">
                   {p.badge}
@@ -171,12 +114,7 @@ export default function Pricing() {
             >
               <span className="inline-flex items-center gap-2 bg-emerald/10 text-emerald px-4 py-2 rounded-full text-sm font-medium">
                 <Zap className="w-4 h-4" />
-                Economize {currentPeriod.discount}% em qualquer plano pagando{" "}
-                {currentPeriod.months === 6
-                  ? "semestralmente"
-                  : currentPeriod.months === 12
-                  ? "anualmente"
-                  : "a cada 2 anos"}
+                {t("savingsBanner", { discount: currentPeriod.discount, frequency: frequencyLabel() })}
               </span>
             </motion.div>
           )}
@@ -190,39 +128,38 @@ export default function Pricing() {
           viewport={{ once: true }}
           className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch max-w-5xl mx-auto"
         >
-          {plans.map((plan) => {
-            const price = plan.isEnterprise
-              ? null
-              : calcPrice(plan.basePrice, currentPeriod.discount);
-            const originalPrice =
-              !plan.isEnterprise && currentPeriod.discount > 0
-                ? plan.basePrice
-                : null;
+          {planKeys.map((planKey) => {
+            const isEnterprise = planKey === "enterprise";
+            const isHighlighted = planKey === "pro";
+            const basePrice = isEnterprise ? 0 : BASE_PRICES[planKey as keyof typeof BASE_PRICES];
+            const price = isEnterprise ? null : calcPrice(basePrice, currentPeriod.discount);
+            const originalPrice = !isEnterprise && currentPeriod.discount > 0 ? basePrice : null;
+            const features = t.raw(`plans.${planKey}.features`) as string[];
 
             return (
               <motion.div
-                key={plan.name}
+                key={planKey}
                 variants={cardVariants}
                 className={`bg-navy rounded-2xl p-8 relative flex flex-col ${
-                  plan.highlighted
+                  isHighlighted
                     ? "border-2 border-electric"
                     : "border border-border"
                 }`}
               >
-                {plan.badge && (
+                {isHighlighted && (
                   <span className="absolute -top-4 left-1/2 -translate-x-1/2 bg-electric text-white text-sm px-4 py-1 rounded-full whitespace-nowrap">
-                    {plan.badge}
+                    {t(`plans.${planKey}.badge`)}
                   </span>
                 )}
 
                 <div className="mb-8">
                   <h3 className="text-xl font-bold text-text-primary mb-2">
-                    {plan.name}
+                    {t(`plans.${planKey}.name`)}
                   </h3>
                   <div className="flex items-baseline gap-2 mb-2">
-                    {plan.isEnterprise ? (
+                    {isEnterprise ? (
                       <span className="text-3xl font-bold text-text-primary">
-                        Sob consulta
+                        {t("onRequest")}
                       </span>
                     ) : (
                       <>
@@ -234,21 +171,20 @@ export default function Pricing() {
                         <span className="text-4xl font-bold text-text-primary">
                           R$ {price}
                         </span>
-                        <span className="text-text-secondary">/mês</span>
+                        <span className="text-text-secondary">{t("perMonth")}</span>
                       </>
                     )}
                   </div>
-                  <p className="text-text-secondary text-sm">{plan.tagline}</p>
-                  {!plan.isEnterprise && currentPeriod.months > 1 && (
+                  <p className="text-text-secondary text-sm">{t(`plans.${planKey}.tagline`)}</p>
+                  {!isEnterprise && currentPeriod.months > 1 && (
                     <p className="text-emerald text-xs mt-1 font-medium">
-                      Cobrado R$ {price! * currentPeriod.months} a cada{" "}
-                      {currentPeriod.months} meses
+                      {t("billedEvery", { total: price! * currentPeriod.months, months: currentPeriod.months })}
                     </p>
                   )}
                 </div>
 
                 <ul className="space-y-3 mb-8 flex-1">
-                  {plan.features.map((feature) => (
+                  {features.map((feature: string) => (
                     <li key={feature} className="flex items-center gap-3">
                       <Check className="w-5 h-5 text-emerald flex-shrink-0" />
                       <span className="text-text-secondary text-sm">
@@ -259,16 +195,16 @@ export default function Pricing() {
                 </ul>
 
                 <a
-                  href={plan.isEnterprise ? "mailto:contato@vellus.tech?subject=ARGO%20Enterprise" : `/checkout?plan=${plan.name.toLowerCase()}&period=${period}`}
+                  href={isEnterprise ? "mailto:contato@vellus.tech?subject=ARGO%20Enterprise" : `/checkout?plan=${planKey}&period=${period}`}
                   className={`block text-center cursor-pointer rounded-lg py-3 w-full font-semibold transition-colors ${
-                    plan.highlighted
+                    isHighlighted
                       ? "bg-electric text-white glow hover:bg-electric/90"
-                      : plan.isEnterprise
+                      : isEnterprise
                       ? "border border-border-light text-text-secondary hover:bg-white/5"
                       : "border border-electric text-electric hover:bg-electric/10"
                   }`}
                 >
-                  {plan.cta}
+                  {t(`plans.${planKey}.cta`)}
                 </a>
               </motion.div>
             );
@@ -282,13 +218,10 @@ export default function Pricing() {
           transition={{ delay: 0.6 }}
           className="text-text-tertiary text-sm text-center mt-12 max-w-3xl mx-auto"
         >
-          Todos os planos incluem: criptografia AES-256, LGPD compliance,
-          atualizações automáticas e 99.9% uptime. Cancele quando quiser.
+          {t("footer")}
           <br />
           <span className="text-text-tertiary/70 text-xs mt-2 block">
-            Os preços exibidos não incluem impostos ou taxas aplicáveis (como IVA
-            ou imposto sobre vendas), a menos que explicitamente indicado.
-            Infraestrutura baseada em KVM (Kernel-based Virtual Machine) no Google Cloud.
+            {t("taxNote")}
           </span>
         </motion.p>
       </div>
