@@ -47,7 +47,7 @@ export default function Header() {
               Login
             </a>
             <a
-              href="#signup"
+              href="/checkout"
               className="rounded-lg bg-electric px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-electric/90"
             >
               Comece Grátis
@@ -94,7 +94,7 @@ export default function Header() {
                 Login
               </a>
               <a
-                href="#signup"
+                href="/checkout"
                 className="rounded-lg bg-electric px-4 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-electric/90"
               >
                 Comece Grátis
