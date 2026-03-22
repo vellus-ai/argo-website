@@ -52,6 +52,8 @@ const plans: PlanProps[] = [
       "Telegram + WhatsApp + Web",
       "Agent Teams (task board)",
       "BYOK (traga sua chave API)",
+      "5 GB storage",
+      "Container compartilhado",
       "Suporte por email",
     ],
     cta: "Teste grátis por 7 dias",
@@ -67,6 +69,8 @@ const plans: PlanProps[] = [
       "Agent Teams + Delegação",
       "White-label básico",
       "Prompt caching (até 90% economia)",
+      "20 GB storage",
+      "Container dedicado (2 vCPU, 4 GB RAM)",
       "Suporte prioritário",
     ],
     cta: "🚀 Teste grátis por 7 dias",
@@ -81,7 +85,8 @@ const plans: PlanProps[] = [
       "Agentes ilimitados",
       "Usuários ilimitados",
       "White-label completo + domínio próprio",
-      "VM dedicada (isolamento total)",
+      "KVM dedicada (isolamento total)",
+      "Storage ilimitado",
       "SLA 99.9% com suporte dedicado",
       "Onboarding assistido",
       "Integrações customizadas",
@@ -166,9 +171,12 @@ export default function Pricing() {
             >
               <span className="inline-flex items-center gap-2 bg-emerald/10 text-emerald px-4 py-2 rounded-full text-sm font-medium">
                 <Zap className="w-4 h-4" />
-                Economize {currentPeriod.discount}% — pague R${" "}
-                {calcPrice(BASE_PRICES.starter, currentPeriod.discount)}/mês no
-                Starter
+                Economize {currentPeriod.discount}% em qualquer plano pagando{" "}
+                {currentPeriod.months === 6
+                  ? "semestralmente"
+                  : currentPeriod.months === 12
+                  ? "anualmente"
+                  : "a cada 2 anos"}
               </span>
             </motion.div>
           )}
@@ -250,8 +258,9 @@ export default function Pricing() {
                   ))}
                 </ul>
 
-                <button
-                  className={`cursor-pointer rounded-lg py-3 w-full font-semibold transition-colors ${
+                <a
+                  href={plan.isEnterprise ? "mailto:contato@vellus.tech?subject=ARGO%20Enterprise" : `/checkout?plan=${plan.name.toLowerCase()}&period=${period}`}
+                  className={`block text-center cursor-pointer rounded-lg py-3 w-full font-semibold transition-colors ${
                     plan.highlighted
                       ? "bg-electric text-white glow hover:bg-electric/90"
                       : plan.isEnterprise
@@ -260,7 +269,7 @@ export default function Pricing() {
                   }`}
                 >
                   {plan.cta}
-                </button>
+                </a>
               </motion.div>
             );
           })}
@@ -275,6 +284,12 @@ export default function Pricing() {
         >
           Todos os planos incluem: criptografia AES-256, LGPD compliance,
           atualizações automáticas e 99.9% uptime. Cancele quando quiser.
+          <br />
+          <span className="text-text-tertiary/70 text-xs mt-2 block">
+            Os preços exibidos não incluem impostos ou taxas aplicáveis (como IVA
+            ou imposto sobre vendas), a menos que explicitamente indicado.
+            Infraestrutura baseada em KVM (Kernel-based Virtual Machine) no Google Cloud.
+          </span>
         </motion.p>
       </div>
     </section>
