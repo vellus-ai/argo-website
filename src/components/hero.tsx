@@ -20,7 +20,7 @@ export default function Hero() {
       >
         {/* Badge */}
         <span className="mb-6 inline-block rounded-full bg-amber-500/10 px-4 py-1.5 text-sm font-medium text-amber-400">
-          ✨ Trial gratuito de 14 dias
+          ⏰ Trial gratuito de 7 dias — promoção por tempo limitado
         </span>
 
         {/* H1 */}

@@ -8,23 +8,23 @@ const plans = [
   {
     id: "starter",
     name: "Starter",
-    price: "R$ 97",
+    price: "R$ 210",
     period: "/mês",
-    features: ["3 agentes", "1 canal", "BYOK", "1 usuário"],
+    features: ["3 agentes", "1 canal", "BYOK", "1 usuário", "Agent Teams"],
   },
   {
     id: "pro",
     name: "Pro",
-    price: "R$ 197",
+    price: "R$ 420",
     period: "/mês",
     popular: true,
     features: [
-      "6 agentes",
-      "3 canais",
+      "10 agentes",
+      "Todos os canais",
       "BYOK + fallback",
       "5 usuários",
       "White-label",
-      "Agent Teams",
+      "Agent Teams + Delegação",
     ],
   },
   {
@@ -105,7 +105,7 @@ export default function CheckoutPage() {
             Monte sua tripulação
           </h1>
           <p className="text-text-secondary text-lg">
-            14 dias grátis. Sem cartão de crédito. Cancele quando quiser.
+            7 dias grátis. Sem cartão de crédito. Cancele quando quiser.
           </p>
         </div>
 
@@ -250,7 +250,7 @@ export default function CheckoutPage() {
                   <div className="flex justify-between text-sm mb-1">
                     <span className="text-text-secondary">Trial</span>
                     <span className="text-emerald font-medium">
-                      14 dias grátis
+                      7 dias grátis
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">

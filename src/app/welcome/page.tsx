@@ -225,7 +225,7 @@ export default function WelcomePage() {
             </div>
             <div>
               <p className="text-xs text-text-tertiary">Período</p>
-              <p className="text-emerald font-medium">14 dias grátis</p>
+              <p className="text-emerald font-medium">7 dias grátis</p>
             </div>
             <div>
               <p className="text-xs text-text-tertiary">Email</p>

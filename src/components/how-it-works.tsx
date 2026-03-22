@@ -17,7 +17,7 @@ const steps: Step[] = [
     icon: CreditCard,
     title: "CONTRATE",
     description:
-      "Escolha seu plano e crie sua conta com trial de 14 dias. Sem cartão, sem compromisso.",
+      "Escolha seu plano e crie sua conta com trial de 7 dias. Sem cartão, sem compromisso.",
   },
   {
     number: 2,

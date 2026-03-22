@@ -33,7 +33,7 @@ const faqs = [
   {
     question: "O trial precisa de cartão?",
     answer:
-      "Não. 14 dias grátis sem cartão. Só pedimos pagamento quando decidir continuar.",
+      "Não. 7 dias grátis sem cartão. Só pedimos pagamento quando decidir continuar.",
   },
   {
     question: "Como funciona o white-label?",

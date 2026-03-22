@@ -16,7 +16,7 @@ export default function CTABanner() {
           Pronto para montar sua tripulação?
         </h2>
         <p className="text-white/80 text-lg mb-8 max-w-2xl mx-auto">
-          14 dias grátis. Sem cartão de crédito. Sem complicação.
+          7 dias grátis. Sem cartão de crédito. Sem complicação.
         </p>
 
         <motion.button
