@@ -10,7 +10,12 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const jetbrains = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains" });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://argo.vellus.tech"),
+  metadataBase: new URL("https://argo.consilium.tec.br"),
+  icons: {
+    icon: "/favicon.svg",
+    shortcut: "/favicon.svg",
+    apple: "/favicon.svg",
+  },
   title: "ARGO — Sua tripulacao de IA | Agentes inteligentes para empresas",
   description:
     "Monte sua equipe de agentes de IA em 5 minutos. Estrategia, operacoes, pesquisa, dados, juridico e engenharia. Trial gratis de 7 dias.",
