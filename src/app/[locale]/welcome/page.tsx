@@ -69,7 +69,7 @@ export default function WelcomePage() {
   }
 
   const firstName = data.name.split(" ")[0];
-  const dashboardUrl = data.dashboardUrl || `https://${data.slug || (data.company ? data.company.toLowerCase().replace(/\s+/g, "-") : firstName.toLowerCase())}.argo.consilium.tec.br`;
+  const dashboardUrl = data.dashboardUrl || `https://${data.slug || (data.company ? data.company.toLowerCase().replace(/\s+/g, "-") : firstName.toLowerCase())}-argo.consilium.tec.br`;
 
   return (
     <div className="min-h-screen bg-midnight">

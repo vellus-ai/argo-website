@@ -123,7 +123,7 @@ function CheckoutContent() {
           slug: mockSlug,
           userId: `argo-${mockSlug}-${Date.now().toString(36)}`,
           token: Array.from({ length: 32 }, () => "abcdef0123456789"[Math.floor(Math.random() * 16)]).join(""),
-          dashboardUrl: `https://${mockSlug}.argo.consilium.tec.br`,
+          dashboardUrl: `https://${mockSlug}-argo.consilium.tec.br`,
           createdAt: new Date().toISOString(),
         })
       );
