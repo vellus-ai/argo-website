@@ -6,6 +6,7 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const jetbrains = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains" });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://argo.vellus.tech"),
   title: "ARGO — Sua tripulação de IA | Agentes inteligentes para empresas",
   description:
     "Monte sua equipe de agentes de IA em 5 minutos. Estratégia, operações, pesquisa, dados, jurídico e engenharia. Trial grátis de 14 dias.",
@@ -22,6 +23,10 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "ARGO — Sua tripulação de IA",
     description: "Monte sua equipe de IA em 5 minutos. Trial grátis.",
+  },
+  robots: {
+    index: false,
+    follow: false,
   },
 };
 
