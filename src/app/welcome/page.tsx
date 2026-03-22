@@ -17,8 +17,13 @@ interface OnboardingData {
   email: string;
   company: string;
   plan: string;
+  period?: string;
+  monthlyPrice?: number;
+  totalPrice?: number;
+  slug?: string;
   userId: string;
   token: string;
+  dashboardUrl?: string;
   createdAt: string;
 }
 
@@ -62,7 +67,7 @@ export default function WelcomePage() {
   }
 
   const firstName = data.name.split(" ")[0];
-  const dashboardUrl = `https://${data.company ? data.company.toLowerCase().replace(/\s+/g, "-") : firstName.toLowerCase()}.argo.vellus.tech`;
+  const dashboardUrl = data.dashboardUrl || `https://${data.slug || (data.company ? data.company.toLowerCase().replace(/\s+/g, "-") : firstName.toLowerCase())}.argo.consilium.tec.br`;
 
   return (
     <div className="min-h-screen bg-midnight">

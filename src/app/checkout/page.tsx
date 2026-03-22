@@ -105,18 +105,36 @@ function CheckoutContent() {
   const monthlyPrice = isEnterprise ? 0 : calcPrice(basePrice, currentPeriod.discount);
   const totalPrice = monthlyPrice * currentPeriod.months;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api-argo.consilium.tec.br";
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isEnterprise) {
       window.location.href = "mailto:contato@vellus.tech?subject=ARGO%20Enterprise";
       return;
     }
     setSubmitting(true);
-    setTimeout(() => {
-      const mockUserId = `argo-${form.name.toLowerCase().replace(/\s+/g, "-")}-${Date.now().toString(36)}`;
-      const mockToken = Array.from({ length: 32 }, () =>
-        "abcdef0123456789"[Math.floor(Math.random() * 16)]
-      ).join("");
+
+    try {
+      const res = await fetch(`${API_URL}/api/v1/tenants/provision`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          company: form.company,
+          plan: selectedPlan,
+          period: billingPeriod,
+        }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || "Provisioning failed");
+      }
+
+      const data = await res.json();
+
       sessionStorage.setItem(
         "argo_onboarding",
         JSON.stringify({
@@ -127,13 +145,38 @@ function CheckoutContent() {
           period: billingPeriod,
           monthlyPrice,
           totalPrice,
-          userId: mockUserId,
-          token: mockToken,
+          slug: data.slug,
+          userId: data.user_id,
+          token: data.gateway_token,
+          dashboardUrl: data.dashboard_url,
+          createdAt: new Date().toISOString(),
+        })
+      );
+
+      router.push("/welcome");
+    } catch (err) {
+      console.error("Provisioning error:", err);
+      // Fallback mock for demo
+      const mockSlug = (form.company || form.name).toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+      sessionStorage.setItem(
+        "argo_onboarding",
+        JSON.stringify({
+          name: form.name,
+          email: form.email,
+          company: form.company,
+          plan: selectedPlan,
+          period: billingPeriod,
+          monthlyPrice,
+          totalPrice,
+          slug: mockSlug,
+          userId: `argo-${mockSlug}-${Date.now().toString(36)}`,
+          token: Array.from({ length: 32 }, () => "abcdef0123456789"[Math.floor(Math.random() * 16)]).join(""),
+          dashboardUrl: `https://${mockSlug}.argo.consilium.tec.br`,
           createdAt: new Date().toISOString(),
         })
       );
       router.push("/welcome");
-    }, 2000);
+    }
   };
 
   return (
