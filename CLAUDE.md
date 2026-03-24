@@ -32,6 +32,7 @@ src/
 
 - **TDD**: Escrever testes antes da implementação sempre que possível
 - **PBT** (Property-Based Testing): Aplicar para validações e transformações de dados
+- **Cobertura mínima: 85%** — usar Jest/Vitest com `--coverage`
 - Padrão de referência backend: `argo-provisioning-api/internal/models/plan_test.go`
 
 ## Environment Variables
