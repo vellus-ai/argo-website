@@ -274,6 +274,11 @@
     "madeIn": "Made with {rocket} in Brazil"
   },
   "checkout": {
+    "goToCheckout": "Go to checkout",
+    "backToCheckout": "Back to checkout",
+    "paymentTitle": "Complete payment",
+    "paymentSubtitle": "Protected with end-to-end encryption",
+    "trialBadge": "7-day free trial — cancel anytime",
     "secureEnvironment": "Secure environment",
     "title": "Build your crew",
     "subtitle": "7 free days. No credit card. Cancel anytime.",

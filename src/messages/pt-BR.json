@@ -274,6 +274,11 @@
     "madeIn": "Feito com {rocket} no Brasil"
   },
   "checkout": {
+    "goToCheckout": "Ir para o checkout",
+    "backToCheckout": "Voltar ao checkout",
+    "paymentTitle": "Finalizar pagamento",
+    "paymentSubtitle": "Dados protegidos com criptografia de ponta a ponta",
+    "trialBadge": "7 dias grátis — cancele a qualquer momento",
     "secureEnvironment": "Ambiente seguro",
     "title": "Monte sua tripulação",
     "subtitle": "7 dias grátis. Sem cartão de crédito. Cancele quando quiser.",
