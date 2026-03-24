@@ -42,6 +42,8 @@ function CheckoutContent() {
   const searchParams = useSearchParams();
   const t = useTranslations("checkout");
 
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api-argo.consilium.tec.br";
+
   const [selectedPlan, setSelectedPlan] = useState("pro");
   const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>("monthly");
   const [form, setForm] = useState({ name: "", email: "", company: "" });
@@ -81,8 +83,6 @@ function CheckoutContent() {
   const basePrice = basePrices[selectedPlan] ?? 0;
   const monthlyPrice = isEnterprise ? 0 : calcPrice(basePrice, currentPeriod.discount);
   const totalPrice = monthlyPrice * currentPeriod.months;
-
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api-argo.consilium.tec.br";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
