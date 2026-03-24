@@ -133,7 +133,7 @@
     },
     "perMonth": "/mês",
     "onRequest": "Sob consulta",
-    "billedEvery": "Cobrado R$ {total} a cada {months} meses",
+    "billedEvery": "Cobrado US$ {total} a cada {months} meses",
     "plans": {
       "starter": {
         "name": "Starter",
@@ -290,7 +290,7 @@
       "annual": "Anual",
       "biennial": "2 anos"
     },
-    "saveBanner": "Economize {discount}% — R$ {amount} no período",
+    "saveBanner": "Economize {discount}% — US$ {amount} no período",
     "savings": {
       "semiannually": "semestralmente",
       "annually": "anualmente",
@@ -332,7 +332,7 @@
       "termsOfUse": "Termos de Uso",
       "and": "e",
       "privacyPolicy": "Política de Privacidade",
-      "afterTrial": "Após o trial, será cobrado R$ {monthlyPrice}/mês{totalPrice, plural, =0 {} other { (R$ {totalPrice} a cada {months} meses)}}."
+      "afterTrial": "Após o trial, será cobrado US$ {monthlyPrice}/mês{totalPrice, plural, =0 {} other { (US$ {totalPrice} a cada {months} meses)}}."
     },
     "trust": {
       "encryption": "Dados protegidos com criptografia AES-256",

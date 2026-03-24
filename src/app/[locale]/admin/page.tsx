@@ -286,6 +286,27 @@ interface Tenant {
   created_at: string;
 }
 
+interface Plan {
+  id: string;
+  name: string;
+  tagline: string;
+  base_price_cents: number;
+  currency: string;
+  max_agents: number;
+  max_users: number;
+  max_storage_mb: number;
+  features: string[];
+  discounts: Record<string, number>;
+  stripe_product_id?: string;
+  stripe_prices: Record<string, string>;
+  is_popular: boolean;
+  is_enterprise: boolean;
+  display_order: number;
+  active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
 interface Stats {
   total_tenants: number;
   active_tenants: number;
@@ -313,6 +334,9 @@ function getInitialTemplateData(): TemplateData {
 export default function AdminPortal() {
   const t = useTranslations("admin");
   const [apiKey, setApiKey] = useState("");
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+  const [loginMode, setLoginMode] = useState<"credentials" | "token">("credentials");
   const [authenticated, setAuthenticated] = useState(false);
   const [stats, setStats] = useState<Stats | null>(null);
   const [tenants, setTenants] = useState<Tenant[]>([]);
@@ -321,7 +345,20 @@ export default function AdminPortal() {
   const [expandedTenant, setExpandedTenant] = useState<string | null>(null);
 
   // Tab state
-  const [activeTab, setActiveTab] = useState<"dashboard" | "templates">("dashboard");
+  const [activeTab, setActiveTab] = useState<"dashboard" | "templates" | "plans">("dashboard");
+
+  // Plans state
+  const [plans, setPlans] = useState<Plan[]>([]);
+  const [planEdits, setPlanEdits] = useState<Record<string, Partial<Plan>>>({});
+  const [editingPlanId, setEditingPlanId] = useState<string | null>(null);
+  const [planLoading, setPlanLoading] = useState(false);
+  const [planError, setPlanError] = useState("");
+  const [showNewPlanForm, setShowNewPlanForm] = useState(false);
+  const [newPlan, setNewPlan] = useState<Partial<Plan>>({
+    id: "", name: "", tagline: "", base_price_cents: 0, currency: "USD",
+    max_agents: 3, max_users: 1, max_storage_mb: 5120,
+    is_popular: false, is_enterprise: false, display_order: 0, active: true,
+  });
 
   // Template state
   const [templateData, setTemplateData] = useState<TemplateData>(getInitialTemplateData);
@@ -361,11 +398,101 @@ export default function AdminPortal() {
     }
   }, [t]);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const fetchPlans = useCallback(async (key: string) => {
+    setPlanLoading(true);
+    setPlanError("");
+    try {
+      const res = await fetch(`${API_URL}/admin/v1/plans`, {
+        headers: { Authorization: `Bearer ${key}` },
+      });
+      if (!res.ok) throw new Error("Failed to fetch plans");
+      const data = await res.json();
+      setPlans(Array.isArray(data) ? data : []);
+    } catch (err) {
+      setPlanError(err instanceof Error ? err.message : "Error loading plans");
+    } finally {
+      setPlanLoading(false);
+    }
+  }, []);
+
+  const handleSavePlan = async (planId: string) => {
+    const edits = planEdits[planId];
+    if (!edits || Object.keys(edits).length === 0) {
+      setEditingPlanId(null);
+      return;
+    }
+    try {
+      const res = await fetch(`${API_URL}/admin/v1/plans/${planId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+        body: JSON.stringify(edits),
+      });
+      if (!res.ok) throw new Error("Update failed");
+      setPlans((prev) => prev.map((p) => p.id === planId ? { ...p, ...edits } : p));
+      setPlanEdits((prev) => { const n = { ...prev }; delete n[planId]; return n; });
+      setEditingPlanId(null);
+    } catch {
+      setPlanError("Failed to save plan");
+    }
+  };
+
+  const handleCreatePlan = async () => {
+    if (!newPlan.id || !newPlan.name) {
+      setPlanError("Plan ID and Name are required");
+      return;
+    }
+    try {
+      const payload = {
+        ...newPlan,
+        currency: newPlan.currency || "USD",
+        base_price_cents: Number(newPlan.base_price_cents) || 0,
+        max_agents: Number(newPlan.max_agents) || 3,
+        max_users: Number(newPlan.max_users) || 1,
+        max_storage_mb: Number(newPlan.max_storage_mb) || 5120,
+        display_order: Number(newPlan.display_order) || 0,
+        features: [],
+        discounts: {},
+        stripe_prices: {},
+        active: newPlan.active ?? true,
+      };
+      const res = await fetch(`${API_URL}/admin/v1/plans`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+        body: JSON.stringify(payload),
+      });
+      if (res.status === 409) { setPlanError("A plan with that ID already exists"); return; }
+      if (!res.ok) throw new Error("Create failed");
+      setShowNewPlanForm(false);
+      setNewPlan({ id: "", name: "", tagline: "", base_price_cents: 0, currency: "USD",
+        max_agents: 3, max_users: 1, max_storage_mb: 5120,
+        is_popular: false, is_enterprise: false, display_order: 0, active: true });
+      fetchPlans(apiKey);
+    } catch {
+      setPlanError("Failed to create plan");
+    }
+  };
+
+  const handleToggleActive = async (plan: Plan) => {
+    try {
+      const res = await fetch(`${API_URL}/admin/v1/plans/${plan.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+        body: JSON.stringify({ active: !plan.active }),
+      });
+      if (!res.ok) throw new Error("Toggle failed");
+      setPlans((prev) => prev.map((p) => p.id === plan.id ? { ...p, active: !plan.active } : p));
+    } catch {
+      setPlanError("Failed to toggle plan status");
+    }
+  };
+
+  const handleTokenLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (apiKey) {
+    if (loginMode === "token" && apiKey) {
       sessionStorage.setItem("argo_admin_key", apiKey);
       fetchData(apiKey);
+    } else if (loginMode === "credentials") {
+      handleLogin();
     }
   };
 
@@ -377,15 +504,49 @@ export default function AdminPortal() {
     }
   }, [fetchData]);
 
+  useEffect(() => {
+    if (activeTab === "plans" && authenticated && apiKey) {
+      fetchPlans(apiKey);
+    }
+  }, [activeTab, authenticated, apiKey, fetchPlans]);
+
   const handleLogout = () => {
     sessionStorage.removeItem("argo_admin_key");
     setAuthenticated(false);
     setApiKey("");
+    setLoginEmail("");
+    setLoginPassword("");
+  };
+
+  const handleLogin = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const res = await fetch(`${API_URL}/admin/v1/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: loginEmail, password: loginPassword }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || "Credenciais inválidas");
+      }
+      const data = await res.json();
+      if (data.token) {
+        setApiKey(data.token);
+        sessionStorage.setItem("argo_admin_key", data.token);
+        fetchData(data.token);
+      }
+    } catch (err: any) {
+      setError(err.message || "Erro ao fazer login");
+    } finally {
+      setLoading(false);
+    }
     setStats(null);
     setTenants([]);
   };
 
-  const formatPrice = (centavos: number) => `R$ ${(centavos / 100).toFixed(2)}`;
+  const formatPrice = (cents: number) => `US$ ${(cents / 100).toLocaleString("en-US", { minimumFractionDigits: 2 })}`;
   const formatDate = (iso: string) => new Date(iso).toLocaleDateString("pt-BR", { day: "2-digit", month: "short", year: "numeric" });
   const daysUntil = (iso: string) => Math.ceil((new Date(iso).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
 
@@ -452,21 +613,59 @@ export default function AdminPortal() {
             <h1 className="text-2xl font-bold text-text-primary">ARGO Admin</h1>
             <p className="text-text-tertiary text-sm mt-1">{t("login.subtitle")}</p>
           </div>
-          <form onSubmit={handleLogin} className="bg-navy rounded-xl border border-border p-6 space-y-4">
+          <form onSubmit={handleTokenLogin} className="bg-navy rounded-xl border border-border p-6 space-y-4">
             <div>
-              <label className="block text-sm text-text-secondary mb-1.5">Admin API Key</label>
-              <input
-                type="password"
-                value={apiKey}
-                onChange={(e) => setApiKey(e.target.value)}
+              {loginMode === "credentials" ? (
+                <>
+                  <label className="block text-sm text-text-secondary mb-1.5">Email</label>
+                  <input
+                    type="email"
+                    value={loginEmail}
+                    onChange={(e) => setLoginEmail(e.target.value)}
+                    placeholder="admin@vellus.tech"
+                    className="w-full px-4 py-3 rounded-lg bg-midnight border border-border text-white placeholder-text-tertiary focus:outline-none focus:ring-2 focus:ring-electric mb-3"
+                    onKeyDown={(e) => e.key === "Enter" && handleLogin()}
+                  />
+                  <label className="block text-sm text-text-secondary mb-1.5">Senha</label>
+                  <input
+                    type="password"
+                    value={loginPassword}
+                    onChange={(e) => setLoginPassword(e.target.value)}
+                    placeholder="••••••••••••"
+                    className="w-full px-4 py-3 rounded-lg bg-midnight border border-border text-white placeholder-text-tertiary focus:outline-none focus:ring-2 focus:ring-electric"
+                    onKeyDown={(e) => e.key === "Enter" && handleLogin()}
+                  />
+                  <button
+                    onClick={() => setLoginMode("token")}
+                    className="text-xs text-text-tertiary hover:text-electric mt-2 underline"
+                  >
+                    Entrar com API Key
+                  </button>
+                </>
+              ) : (
+                <>
+                  <label className="block text-sm text-text-secondary mb-1.5">Admin API Key</label>
+                  <input
+                    type="password"
+                    value={apiKey}
+                    onChange={(e) => setApiKey(e.target.value)}
                 placeholder="argo-admin-..."
                 className="w-full rounded-lg border border-border bg-midnight px-4 py-2.5 text-text-primary placeholder:text-text-tertiary focus:border-electric focus:outline-none focus:ring-1 focus:ring-electric"
               />
+              <button
+                onClick={() => setLoginMode("credentials")}
+                className="text-xs text-text-tertiary hover:text-electric mt-2 underline"
+              >
+                Entrar com email e senha
+              </button>
+                </>
+              )}
             </div>
             {error && <p className="text-red-400 text-sm">{error}</p>}
             <button
               type="submit"
-              disabled={loading || !apiKey}
+              disabled={loading || (loginMode === "token" ? !apiKey : !loginEmail || !loginPassword)}
+              onClick={loginMode === "credentials" ? handleLogin : undefined}
               className="w-full bg-electric text-white rounded-lg py-2.5 font-semibold hover:bg-electric/90 disabled:opacity-50 cursor-pointer"
             >
               {loading ? t("login.authenticating") : t("login.enter")}
@@ -511,6 +710,17 @@ export default function AdminPortal() {
               >
                 <Mail className="w-3.5 h-3.5" />
                 Templates
+              </button>
+              <button
+                onClick={() => setActiveTab("plans")}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition cursor-pointer ${
+                  activeTab === "plans"
+                    ? "bg-electric text-white"
+                    : "text-text-tertiary hover:text-text-secondary"
+                }`}
+              >
+                <CreditCard className="w-3.5 h-3.5" />
+                Plans
               </button>
             </div>
           </div>
@@ -839,6 +1049,240 @@ export default function AdminPortal() {
           <p className="text-xs text-text-tertiary text-center mt-8">
             {t("dashboard.footer")}
           </p>
+        </main>
+      )}
+
+      {/* ===== PLANS TAB ===== */}
+      {activeTab === "plans" && (
+        <main className="max-w-7xl mx-auto px-4 py-6">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-xl font-bold text-text-primary flex items-center gap-2">
+                <CreditCard className="w-5 h-5 text-electric" />
+                Plans Management
+              </h2>
+              <p className="text-sm text-text-tertiary mt-1">Manage subscription plans and pricing</p>
+            </div>
+            <button
+              onClick={() => { setShowNewPlanForm(true); setPlanError(""); }}
+              className="flex items-center gap-2 px-4 py-2 bg-electric text-white rounded-lg text-sm font-semibold hover:bg-electric/90 transition cursor-pointer"
+            >
+              + New Plan
+            </button>
+          </div>
+
+          {planError && (
+            <div className="mb-4 bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-2.5 rounded-lg text-sm">
+              {planError}
+            </div>
+          )}
+
+          {/* New Plan Form */}
+          {showNewPlanForm && (
+            <div className="bg-navy border border-electric/30 rounded-xl p-6 mb-6">
+              <h3 className="text-sm font-semibold text-text-tertiary uppercase tracking-wider mb-4">Create New Plan</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-xs text-text-tertiary mb-1">Plan ID *</label>
+                  <input type="text" value={newPlan.id || ""}
+                    onChange={(e) => setNewPlan((p) => ({ ...p, id: e.target.value.toLowerCase() }))}
+                    placeholder="my-plan"
+                    className="w-full px-3 py-2 rounded-lg bg-midnight border border-border text-text-primary text-sm focus:border-electric focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-text-tertiary mb-1">Name *</label>
+                  <input type="text" value={newPlan.name || ""}
+                    onChange={(e) => setNewPlan((p) => ({ ...p, name: e.target.value }))}
+                    placeholder="My Plan"
+                    className="w-full px-3 py-2 rounded-lg bg-midnight border border-border text-text-primary text-sm focus:border-electric focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-text-tertiary mb-1">
+                    Base Price (USD cents) = {formatPrice(newPlan.base_price_cents ?? 0)}/mo
+                  </label>
+                  <input type="number" min={0} value={newPlan.base_price_cents ?? 0}
+                    onChange={(e) => setNewPlan((p) => ({ ...p, base_price_cents: Number(e.target.value) }))}
+                    className="w-full px-3 py-2 rounded-lg bg-midnight border border-border text-text-primary text-sm focus:border-electric focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-text-tertiary mb-1">Max Agents</label>
+                  <input type="number" min={1} value={newPlan.max_agents ?? 3}
+                    onChange={(e) => setNewPlan((p) => ({ ...p, max_agents: Number(e.target.value) }))}
+                    className="w-full px-3 py-2 rounded-lg bg-midnight border border-border text-text-primary text-sm focus:border-electric focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-text-tertiary mb-1">Max Users</label>
+                  <input type="number" min={1} value={newPlan.max_users ?? 1}
+                    onChange={(e) => setNewPlan((p) => ({ ...p, max_users: Number(e.target.value) }))}
+                    className="w-full px-3 py-2 rounded-lg bg-midnight border border-border text-text-primary text-sm focus:border-electric focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-text-tertiary mb-1">Display Order</label>
+                  <input type="number" min={0} value={newPlan.display_order ?? 0}
+                    onChange={(e) => setNewPlan((p) => ({ ...p, display_order: Number(e.target.value) }))}
+                    className="w-full px-3 py-2 rounded-lg bg-midnight border border-border text-text-primary text-sm focus:border-electric focus:outline-none"
+                  />
+                </div>
+                <div className="md:col-span-3">
+                  <label className="block text-xs text-text-tertiary mb-1">Tagline</label>
+                  <input type="text" value={newPlan.tagline || ""}
+                    onChange={(e) => setNewPlan((p) => ({ ...p, tagline: e.target.value }))}
+                    placeholder="Brief plan description"
+                    className="w-full px-3 py-2 rounded-lg bg-midnight border border-border text-text-primary text-sm focus:border-electric focus:outline-none"
+                  />
+                </div>
+                <div className="flex items-center gap-6">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" checked={newPlan.is_popular ?? false}
+                      onChange={(e) => setNewPlan((p) => ({ ...p, is_popular: e.target.checked }))}
+                      className="rounded"
+                    />
+                    <span className="text-sm text-text-secondary">Popular</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" checked={newPlan.is_enterprise ?? false}
+                      onChange={(e) => setNewPlan((p) => ({ ...p, is_enterprise: e.target.checked }))}
+                      className="rounded"
+                    />
+                    <span className="text-sm text-text-secondary">Enterprise</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" checked={newPlan.active ?? true}
+                      onChange={(e) => setNewPlan((p) => ({ ...p, active: e.target.checked }))}
+                      className="rounded"
+                    />
+                    <span className="text-sm text-text-secondary">Active</span>
+                  </label>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 mt-4">
+                <button onClick={handleCreatePlan}
+                  className="px-4 py-2 bg-electric text-white rounded-lg text-sm font-semibold hover:bg-electric/90 transition cursor-pointer"
+                >
+                  Create Plan
+                </button>
+                <button onClick={() => { setShowNewPlanForm(false); setPlanError(""); }}
+                  className="px-4 py-2 bg-midnight border border-border rounded-lg text-sm text-text-secondary hover:text-text-primary transition cursor-pointer"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Plans List */}
+          {planLoading ? (
+            <div className="text-center py-12 text-text-tertiary">Loading plans...</div>
+          ) : (
+            <div className="space-y-4">
+              {plans.map((plan) => {
+                const isEditing = editingPlanId === plan.id;
+                const edits = planEdits[plan.id] || {};
+                const currentName = edits.name ?? plan.name;
+                const currentTagline = edits.tagline ?? plan.tagline;
+                const currentPrice = edits.base_price_cents ?? plan.base_price_cents;
+
+                return (
+                  <div key={plan.id} className={`bg-navy rounded-xl border p-5 ${plan.is_popular ? "border-electric" : "border-border"} ${!plan.active ? "opacity-60" : ""}`}>
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-2">
+                          <span className="font-mono text-xs text-text-tertiary bg-midnight px-2 py-0.5 rounded">{plan.id}</span>
+                          {plan.is_popular && <span className="text-xs bg-electric/20 text-electric px-2 py-0.5 rounded-full">Popular</span>}
+                          {plan.is_enterprise && <span className="text-xs bg-amber/20 text-amber px-2 py-0.5 rounded-full">Enterprise</span>}
+                          {!plan.active && <span className="text-xs bg-red-500/20 text-red-400 px-2 py-0.5 rounded-full">Inactive</span>}
+                        </div>
+
+                        {isEditing ? (
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-2">
+                            <div>
+                              <label className="block text-xs text-text-tertiary mb-1">Name</label>
+                              <input type="text" value={currentName}
+                                onChange={(e) => setPlanEdits((p) => ({ ...p, [plan.id]: { ...p[plan.id], name: e.target.value } }))}
+                                className="w-full px-3 py-2 rounded-lg bg-midnight border border-border text-text-primary text-sm focus:border-electric focus:outline-none"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-xs text-text-tertiary mb-1">
+                                Price (cents) = {formatPrice(currentPrice)}/mo
+                              </label>
+                              <input type="number" min={0} value={currentPrice}
+                                onChange={(e) => setPlanEdits((p) => ({ ...p, [plan.id]: { ...p[plan.id], base_price_cents: Number(e.target.value) } }))}
+                                className="w-full px-3 py-2 rounded-lg bg-midnight border border-border text-text-primary text-sm focus:border-electric focus:outline-none"
+                              />
+                            </div>
+                            <div className="md:col-span-2">
+                              <label className="block text-xs text-text-tertiary mb-1">Tagline</label>
+                              <input type="text" value={currentTagline}
+                                onChange={(e) => setPlanEdits((p) => ({ ...p, [plan.id]: { ...p[plan.id], tagline: e.target.value } }))}
+                                className="w-full px-3 py-2 rounded-lg bg-midnight border border-border text-text-primary text-sm focus:border-electric focus:outline-none"
+                              />
+                            </div>
+                          </div>
+                        ) : (
+                          <>
+                            <h3 className="text-lg font-bold text-text-primary">{plan.name}</h3>
+                            <p className="text-text-secondary text-sm">{plan.tagline}</p>
+                          </>
+                        )}
+
+                        <div className="grid grid-cols-3 gap-4 mt-3 text-sm">
+                          <div><span className="text-text-tertiary">Price: </span><span className="text-text-primary font-bold">{formatPrice(plan.base_price_cents)}/mo</span></div>
+                          <div><span className="text-text-tertiary">Agents: </span><span className="text-text-primary">{plan.max_agents}</span></div>
+                          <div><span className="text-text-tertiary">Users: </span><span className="text-text-primary">{plan.max_users}</span></div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        <button onClick={() => handleToggleActive(plan)}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer ${
+                            plan.active
+                              ? "bg-midnight border border-border text-text-secondary hover:border-red-400 hover:text-red-400"
+                              : "bg-emerald/10 border border-emerald/30 text-emerald hover:bg-emerald/20"
+                          }`}
+                        >
+                          {plan.active ? "Deactivate" : "Activate"}
+                        </button>
+
+                        {isEditing ? (
+                          <>
+                            <button onClick={() => handleSavePlan(plan.id)}
+                              className="px-3 py-1.5 bg-electric text-white rounded-lg text-xs font-semibold hover:bg-electric/90 transition cursor-pointer"
+                            >
+                              Save
+                            </button>
+                            <button onClick={() => {
+                              setPlanEdits((p) => { const n = { ...p }; delete n[plan.id]; return n; });
+                              setEditingPlanId(null);
+                            }}
+                              className="px-3 py-1.5 bg-midnight border border-border text-text-secondary rounded-lg text-xs hover:text-text-primary transition cursor-pointer"
+                            >
+                              Cancel
+                            </button>
+                          </>
+                        ) : (
+                          <button onClick={() => setEditingPlanId(plan.id)}
+                            className="px-3 py-1.5 bg-midnight border border-border text-text-secondary rounded-lg text-xs hover:border-electric hover:text-electric transition cursor-pointer"
+                          >
+                            Edit
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+
+              {plans.length === 0 && !planLoading && (
+                <div className="text-center py-12 text-text-tertiary">No plans found. Create one above.</div>
+              )}
+            </div>
+          )}
         </main>
       )}
     </div>

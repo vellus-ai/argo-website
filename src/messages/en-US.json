@@ -133,7 +133,7 @@
     },
     "perMonth": "/mo",
     "onRequest": "Contact us",
-    "billedEvery": "Billed R$ {total} every {months} months",
+    "billedEvery": "Billed US$ {total} every {months} months",
     "plans": {
       "starter": {
         "name": "Starter",
@@ -290,7 +290,7 @@
       "annual": "Annual",
       "biennial": "2 years"
     },
-    "saveBanner": "Save {discount}% — R$ {amount} in this period",
+    "saveBanner": "Save {discount}% — US$ {amount} in this period",
     "savings": {
       "semiannually": "semiannually",
       "annually": "annually",
@@ -332,7 +332,7 @@
       "termsOfUse": "Terms of Service",
       "and": "and",
       "privacyPolicy": "Privacy Policy",
-      "afterTrial": "After the trial, you will be charged R$ {monthlyPrice}/mo{totalPrice, plural, =0 {} other { (R$ {totalPrice} every {months} months)}}."
+      "afterTrial": "After the trial, you will be charged US$ {monthlyPrice}/mo{totalPrice, plural, =0 {} other { (US$ {totalPrice} every {months} months)}}."
     },
     "trust": {
       "encryption": "Data protected with AES-256 encryption",

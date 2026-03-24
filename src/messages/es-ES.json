@@ -73,7 +73,7 @@
     "frequency": { "semiannually": "semestralmente", "annually": "anualmente", "biennially": "cada 2 anos" },
     "perMonth": "/mes",
     "onRequest": "Bajo consulta",
-    "billedEvery": "Cobrado R$ {total} cada {months} meses",
+    "billedEvery": "Cobrado US$ {total} cada {months} meses",
     "plans": {
       "starter": { "name": "Starter", "tagline": "Para emprendedores y profesionales autonomos", "cta": "Prueba gratis por 7 dias", "features": ["3 agentes IA", "1 usuario", "Telegram + WhatsApp + Web", "Agent Teams (task board)", "BYOK (trae tu API key)", "5 GB storage", "Container compartido", "Soporte por email"] },
       "pro": { "name": "Pro", "tagline": "Para equipos que quieren resultados", "cta": "Prueba gratis por 7 dias", "badge": "Mas popular", "features": ["10 agentes IA", "5 usuarios", "Todos los canales", "Agent Teams + Delegacion", "White-label basico", "Prompt caching (hasta 90% ahorro)", "20 GB storage", "Container dedicado (2 vCPU, 4 GB RAM)", "Soporte prioritario"] },
@@ -133,7 +133,7 @@
     "onRequest": "Bajo consulta",
     "perMonth": "mes",
     "periods": { "monthly": "Mensual", "semiannual": "Semestral", "annual": "Anual", "biennial": "2 anos" },
-    "saveBanner": "Ahorra {discount}% — R$ {amount} en el periodo",
+    "saveBanner": "Ahorra {discount}% — US$ {amount} en el periodo",
     "savings": { "semiannually": "semestralmente", "annually": "anualmente", "biennially": "cada 2 anos" },
     "plans": {
       "starter": { "name": "Starter", "features": ["3 agentes IA", "1 usuario", "5 GB storage", "Telegram + WhatsApp + Web", "BYOK", "Agent Teams"] },
@@ -145,7 +145,7 @@
     "submitting": "Preparando tu tripulacion...",
     "startTrial": "Iniciar prueba gratuita",
     "talkToSales": "Hablar con ventas",
-    "terms": { "prefix": "Al continuar, aceptas los", "termsOfUse": "Terminos de Uso", "and": "y", "privacyPolicy": "Politica de Privacidad", "afterTrial": "Despues del trial, se cobrara R$ {monthlyPrice}/mes{totalPrice, plural, =0 {} other { (R$ {totalPrice} cada {months} meses)}}." },
+    "terms": { "prefix": "Al continuar, aceptas los", "termsOfUse": "Terminos de Uso", "and": "y", "privacyPolicy": "Politica de Privacidad", "afterTrial": "Despues del trial, se cobrara US$ {monthlyPrice}/mes{totalPrice, plural, =0 {} other { (US$ {totalPrice} cada {months} meses)}}." },
     "trust": { "encryption": "Datos protegidos con encriptacion AES-256", "setup": "Setup en menos de 5 minutos" },
     "faqTitle": "Preguntas frecuentes sobre facturacion",
     "faqs": {

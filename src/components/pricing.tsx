@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, Zap } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -21,10 +21,14 @@ const periods: PeriodOption[] = [
   { key: "biennial", months: 24, discount: 20, badge: "-20%" },
 ];
 
-const BASE_PRICES = {
-  starter: 210,
-  pro: 420,
+const FALLBACK_PRICES: Record<string, number> = {
+  starter: 50,
+  pro: 99,
 };
+
+const CURRENCY = "US$";
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api-argo.consilium.tec.br";
 
 function calcPrice(base: number, discount: number): number {
   return Math.round(base * (1 - discount / 100));
@@ -45,7 +49,28 @@ const cardVariants = {
 export default function Pricing() {
   const t = useTranslations("pricing");
   const [period, setPeriod] = useState<BillingPeriod>("monthly");
+  const [basePrices, setBasePrices] = useState<Record<string, number>>(FALLBACK_PRICES);
   const currentPeriod = periods.find((p) => p.key === period)!;
+
+  useEffect(() => {
+    fetch(`${API_URL}/api/v1/plans`)
+      .then((res) => {
+        if (!res.ok) throw new Error("plans API error");
+        return res.json() as Promise<Array<{ id: string; base_price_cents: number; is_enterprise: boolean; active: boolean }>>;
+      })
+      .then((plans) => {
+        const prices: Record<string, number> = { ...FALLBACK_PRICES };
+        for (const plan of plans) {
+          if (!plan.is_enterprise && plan.active) {
+            prices[plan.id] = Math.round(plan.base_price_cents / 100);
+          }
+        }
+        setBasePrices(prices);
+      })
+      .catch(() => {
+        // Silently use fallback prices
+      });
+  }, []);
 
   const frequencyLabel = () => {
     if (currentPeriod.months === 6) return t("frequency.semiannually");
@@ -131,7 +156,7 @@ export default function Pricing() {
           {planKeys.map((planKey) => {
             const isEnterprise = planKey === "enterprise";
             const isHighlighted = planKey === "pro";
-            const basePrice = isEnterprise ? 0 : BASE_PRICES[planKey as keyof typeof BASE_PRICES];
+            const basePrice = isEnterprise ? 0 : (basePrices[planKey] ?? 0);
             const price = isEnterprise ? null : calcPrice(basePrice, currentPeriod.discount);
             const originalPrice = !isEnterprise && currentPeriod.discount > 0 ? basePrice : null;
             const features = t.raw(`plans.${planKey}.features`) as string[];
@@ -165,11 +190,11 @@ export default function Pricing() {
                       <>
                         {originalPrice && (
                           <span className="text-lg text-text-tertiary line-through">
-                            R$ {originalPrice}
+                            {CURRENCY} {originalPrice.toLocaleString("en-US", { minimumFractionDigits: 2 })}
                           </span>
                         )}
                         <span className="text-4xl font-bold text-text-primary">
-                          R$ {price}
+                          {CURRENCY} {price?.toLocaleString("en-US", { minimumFractionDigits: 2 })}
                         </span>
                         <span className="text-text-secondary">{t("perMonth")}</span>
                       </>
@@ -178,7 +203,7 @@ export default function Pricing() {
                   <p className="text-text-secondary text-sm">{t(`plans.${planKey}.tagline`)}</p>
                   {!isEnterprise && currentPeriod.months > 1 && (
                     <p className="text-emerald text-xs mt-1 font-medium">
-                      {t("billedEvery", { total: price! * currentPeriod.months, months: currentPeriod.months })}
+                      {t("billedEvery", { total: (price! * currentPeriod.months).toLocaleString("en-US", { minimumFractionDigits: 2 }), months: currentPeriod.months })}
                     </p>
                   )}
                 </div>

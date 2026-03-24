@@ -1,10 +1,14 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
-import { Anchor, Rocket, Shield, Zap, Check, ChevronDown } from "lucide-react";
+import { Anchor, Rocket, Shield, Zap, Check, ChevronDown, CreditCard } from "lucide-react";
+import { loadStripe } from "@stripe/stripe-js";
+import { EmbeddedCheckoutProvider, EmbeddedCheckout } from "@stripe/react-stripe-js";
+
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "pk_test_51TEEAtAoPvt8J4RKVXMxPbR5pJ4vdS43IVlLqVwJ5bTkK80hj40L6A4YFDLR3gRWeDRSVQ5lM1P2MQqnXKILmk6B00hxQTkbUo");
 
 type BillingPeriod = "monthly" | "semiannual" | "annual" | "biennial";
 
@@ -22,9 +26,9 @@ const periods: PeriodOption[] = [
   { key: "biennial", months: 24, discount: 20, badge: "-20%" },
 ];
 
-const BASE_PRICES: Record<string, number> = {
-  starter: 210,
-  pro: 420,
+const FALLBACK_PRICES: Record<string, number> = {
+  starter: 50,
+  pro: 99,
 };
 
 function calcPrice(base: number, discount: number): number {
@@ -41,8 +45,28 @@ function CheckoutContent() {
   const [selectedPlan, setSelectedPlan] = useState("pro");
   const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>("monthly");
   const [form, setForm] = useState({ name: "", email: "", company: "" });
+  const [basePrices, setBasePrices] = useState<Record<string, number>>(FALLBACK_PRICES);
   const [submitting, setSubmitting] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [showPayment, setShowPayment] = useState(false);
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch(`${API_URL}/api/v1/plans`)
+      .then((res) => (res.ok ? res.json() : Promise.reject()))
+      .then((plans: Array<{ id: string; base_price_cents: number; is_enterprise: boolean; active: boolean }>) => {
+        const prices: Record<string, number> = { ...FALLBACK_PRICES };
+        for (const plan of plans) {
+          if (!plan.is_enterprise && plan.active) {
+            prices[plan.id] = Math.round(plan.base_price_cents / 100);
+          }
+        }
+        setBasePrices(prices);
+      })
+      .catch(() => {
+        // Silently use fallback prices
+      });
+  }, [API_URL]);
 
   useEffect(() => {
     const plan = searchParams.get("plan");
@@ -54,7 +78,7 @@ function CheckoutContent() {
 
   const currentPeriod = periods.find((p) => p.key === billingPeriod)!;
   const isEnterprise = selectedPlan === "enterprise";
-  const basePrice = BASE_PRICES[selectedPlan] || 0;
+  const basePrice = basePrices[selectedPlan] ?? 0;
   const monthlyPrice = isEnterprise ? 0 : calcPrice(basePrice, currentPeriod.discount);
   const totalPrice = monthlyPrice * currentPeriod.months;
 
@@ -69,7 +93,20 @@ function CheckoutContent() {
     setSubmitting(true);
 
     try {
-      const res = await fetch(`${API_URL}/api/v1/tenants/provision`, {
+      // Save checkout data for welcome page
+      sessionStorage.setItem("argo_checkout_data", JSON.stringify({
+        name: form.name,
+        email: form.email,
+        company: form.company,
+        plan: selectedPlan,
+        period: billingPeriod,
+        monthlyPrice,
+        totalPrice,
+        createdAt: new Date().toISOString(),
+      }));
+
+      // Create embedded checkout session
+      const res = await fetch(`${API_URL}/api/v1/checkout/create-embedded`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -83,51 +120,15 @@ function CheckoutContent() {
 
       if (!res.ok) {
         const err = await res.json();
-        throw new Error(err.error || "Provisioning failed");
+        throw new Error(err.error || "Failed to create checkout session");
       }
 
       const data = await res.json();
-
-      sessionStorage.setItem(
-        "argo_onboarding",
-        JSON.stringify({
-          name: form.name,
-          email: form.email,
-          company: form.company,
-          plan: selectedPlan,
-          period: billingPeriod,
-          monthlyPrice,
-          totalPrice,
-          slug: data.slug,
-          userId: data.user_id,
-          token: data.gateway_token,
-          dashboardUrl: data.dashboard_url,
-          createdAt: new Date().toISOString(),
-        })
-      );
-
-      router.push("/welcome");
+      setClientSecret(data.client_secret);
+      setShowPayment(true);
     } catch (err) {
-      console.error("Provisioning error:", err);
-      const mockSlug = (form.company || form.name).toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
-      sessionStorage.setItem(
-        "argo_onboarding",
-        JSON.stringify({
-          name: form.name,
-          email: form.email,
-          company: form.company,
-          plan: selectedPlan,
-          period: billingPeriod,
-          monthlyPrice,
-          totalPrice,
-          slug: mockSlug,
-          userId: `argo-${mockSlug}-${Date.now().toString(36)}`,
-          token: Array.from({ length: 32 }, () => "abcdef0123456789"[Math.floor(Math.random() * 16)]).join(""),
-          dashboardUrl: `https://${mockSlug}-argo.consilium.tec.br`,
-          createdAt: new Date().toISOString(),
-        })
-      );
-      router.push("/welcome");
+      console.error("Checkout error:", err);
+      setSubmitting(false);
     }
   };
 
@@ -145,6 +146,61 @@ function CheckoutContent() {
   };
 
   const faqKeys = ["billing", "upgrade", "cancel", "taxes", "limits", "infrastructure", "security"] as const;
+
+  // Show embedded Stripe payment form
+  if (showPayment && clientSecret) {
+    return (
+      <div className="min-h-screen bg-midnight">
+        <header className="py-6 px-4">
+          <div className="max-w-3xl mx-auto flex items-center justify-between">
+            <a href="/" className="flex items-center gap-2">
+              <Anchor className="w-6 h-6 text-electric" />
+              <span className="text-xl font-bold text-text-primary">ARGO</span>
+            </a>
+            <button
+              onClick={() => { setShowPayment(false); setClientSecret(null); setSubmitting(false); }}
+              className="text-text-tertiary hover:text-text-primary text-sm"
+            >
+              ← {t("backToCheckout") || "Voltar"}
+            </button>
+          </div>
+        </header>
+
+        <main className="max-w-3xl mx-auto px-4 py-8">
+          <div className="text-center mb-8">
+            <h1 className="text-2xl font-bold text-text-primary mb-2">
+              <CreditCard className="inline w-6 h-6 mr-2 text-electric" />
+              {t("paymentTitle") || "Finalizar pagamento"}
+            </h1>
+            <p className="text-text-secondary">
+              {t("paymentSubtitle") || "Dados protegidos com criptografia de ponta a ponta"}
+            </p>
+            <div className="mt-4 inline-flex items-center gap-2 bg-emerald/10 text-emerald px-4 py-2 rounded-full text-sm font-medium">
+              <Rocket className="w-4 h-4" />
+              {t("trialBadge") || "7 dias grátis — cancele a qualquer momento"}
+            </div>
+          </div>
+
+          <div className="bg-navy rounded-2xl border border-border overflow-hidden">
+            <EmbeddedCheckoutProvider stripe={stripePromise} options={{ clientSecret }}>
+              <EmbeddedCheckout className="stripe-embedded" />
+            </EmbeddedCheckoutProvider>
+          </div>
+
+          <div className="mt-6 flex items-center justify-center gap-4 text-text-tertiary text-xs">
+            <div className="flex items-center gap-1">
+              <Shield className="w-3 h-3" />
+              <span>PCI DSS Level 1</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Zap className="w-3 h-3" />
+              <span>256-bit SSL</span>
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-midnight">
@@ -200,7 +256,7 @@ function CheckoutContent() {
                       )}
                       <span className="block text-sm font-semibold text-text-primary">{periodLabels[p.key]}</span>
                       <span className={`block text-xs mt-0.5 ${p.discount > 0 ? "text-emerald" : "text-text-tertiary"}`}>
-                        {p.discount > 0 ? `R$ ${calcPrice(basePrice, p.discount)}/${t("perMonth")}` : `R$ ${basePrice}/${t("perMonth")}`}
+                        {p.discount > 0 ? `US$ ${calcPrice(basePrice, p.discount)}/${t("perMonth")}` : `US$ ${basePrice}/${t("perMonth")}`}
                       </span>
                     </button>
                   ))}
@@ -251,10 +307,10 @@ function CheckoutContent() {
                       {planId !== "enterprise" && (
                         <div className="text-right">
                           {currentPeriod.discount > 0 && (
-                            <span className="text-xs text-text-tertiary line-through mr-1">R$ {BASE_PRICES[planId]}</span>
+                            <span className="text-xs text-text-tertiary line-through mr-1">US$ {basePrices[planId] ?? 0}</span>
                           )}
                           <span className="text-lg font-bold text-text-primary">
-                            R$ {calcPrice(BASE_PRICES[planId], currentPeriod.discount)}
+                            US$ {calcPrice(basePrices[planId] ?? 0, currentPeriod.discount)}
                           </span>
                           <span className="text-text-tertiary text-xs">/{t("perMonth")}</span>
                         </div>
@@ -345,16 +401,16 @@ function CheckoutContent() {
                         <span className="text-text-primary">
                           {currentPeriod.discount > 0 && (
                             <span className="text-text-tertiary line-through mr-2 text-xs">
-                              R$ {basePrice}
+                              US$ {basePrice}
                             </span>
                           )}
-                          R$ {monthlyPrice}/{t("perMonth")}
+                          US$ {monthlyPrice}/{t("perMonth")}
                         </span>
                       </div>
                       {currentPeriod.months > 1 && (
                         <div className="flex justify-between text-sm">
                           <span className="text-text-secondary">{t("summary.totalPeriod")}</span>
-                          <span className="text-text-primary font-bold">R$ {totalPrice}</span>
+                          <span className="text-text-primary font-bold">US$ {totalPrice}</span>
                         </div>
                       )}
                     </>
@@ -365,7 +421,7 @@ function CheckoutContent() {
                   </div>
                   <div className="flex justify-between text-sm pt-2 border-t border-border">
                     <span className="text-text-secondary">{t("summary.todayYouPay")}</span>
-                    <span className="text-text-primary font-bold text-lg">R$ 0,00</span>
+                    <span className="text-text-primary font-bold text-lg">US$ 0,00</span>
                   </div>
                 </div>
 
