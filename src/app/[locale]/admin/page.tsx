@@ -1446,7 +1446,7 @@ function PlanFormPanel({
       <div className="flex flex-wrap items-center gap-6 mb-3">
         {INFRA_OPTIONS.map((opt) => (
           <label key={opt.value} className={checkboxLabelCls}>
-            <input type="radio" name="infra_type" value={opt.value}
+            <input type="radio" name={`infra_type_${isNew ? "new" : data.id}`} value={opt.value}
               checked={(data.infra_type || "shared") === opt.value}
               onChange={() => set({ infra_type: opt.value })}
               className="accent-electric"
@@ -1483,7 +1483,7 @@ function PlanFormPanel({
       <div className="flex flex-wrap items-center gap-6">
         {WHITELABEL_OPTIONS.map((opt) => (
           <label key={opt.value} className={checkboxLabelCls}>
-            <input type="radio" name="whitelabel_level" value={opt.value}
+            <input type="radio" name={`whitelabel_level_${isNew ? "new" : data.id}`} value={opt.value}
               checked={(data.whitelabel_level || "none") === opt.value}
               onChange={() => set({ whitelabel_level: opt.value })}
               className="accent-electric"
