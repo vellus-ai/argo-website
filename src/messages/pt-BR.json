@@ -184,7 +184,10 @@
       }
     },
     "footer": "Todos os planos incluem: criptografia AES-256, LGPD compliance, atualizações automáticas e 99.9% uptime. Cancele quando quiser.",
-    "taxNote": "Os preços exibidos não incluem impostos ou taxas aplicáveis (como IVA ou imposto sobre vendas), a menos que explicitamente indicado. Infraestrutura baseada em KVM (Kernel-based Virtual Machine) no Google Cloud."
+    "taxNote": "Os preços exibidos não incluem impostos ou taxas aplicáveis (como IVA ou imposto sobre vendas), a menos que explicitamente indicado. Infraestrutura baseada em KVM (Kernel-based Virtual Machine) no Google Cloud.",
+    "popular": "Mais popular",
+    "start_cta": "Começar grátis",
+    "enterprise_cta": "Falar com vendas"
   },
   "testimonials": {
     "title": "Quem usa, recomenda",

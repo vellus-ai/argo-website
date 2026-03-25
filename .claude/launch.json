@@ -5,7 +5,8 @@
       "name": "argo-website",
       "runtimeExecutable": "npx",
       "runtimeArgs": ["next", "dev"],
-      "port": 3000
+      "port": 3001,
+      "autoPort": true
     }
   ]
 }
