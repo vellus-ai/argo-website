@@ -303,6 +303,16 @@ interface Plan {
   is_enterprise: boolean;
   display_order: number;
   active: boolean;
+  channels: string[];
+  agent_teams: boolean;
+  agent_delegation: boolean;
+  byok: boolean;
+  infra_type: string;
+  support_channels: string[];
+  whitelabel_level: string;
+  prompt_caching: boolean;
+  max_concurrent_users: number;
+  container_spec: string;
   created_at: string;
   updated_at: string;
 }
@@ -349,16 +359,20 @@ export default function AdminPortal() {
 
   // Plans state
   const [plans, setPlans] = useState<Plan[]>([]);
-  const [planEdits, setPlanEdits] = useState<Record<string, Partial<Plan>>>({});
-  const [editingPlanId, setEditingPlanId] = useState<string | null>(null);
   const [planLoading, setPlanLoading] = useState(false);
   const [planError, setPlanError] = useState("");
   const [showNewPlanForm, setShowNewPlanForm] = useState(false);
-  const [newPlan, setNewPlan] = useState<Partial<Plan>>({
+  const [showEditModal, setShowEditModal] = useState<string | null>(null);
+  const [editPlanData, setEditPlanData] = useState<Partial<Plan>>({});
+  const defaultNewPlan: Partial<Plan> = {
     id: "", name: "", tagline: "", base_price_cents: 0, currency: "USD",
-    max_agents: 3, max_users: 1, max_storage_mb: 5120,
+    max_agents: 3, max_users: 1, max_storage_mb: 5120, max_concurrent_users: 1,
     is_popular: false, is_enterprise: false, display_order: 0, active: true,
-  });
+    channels: ["web"], agent_teams: false, agent_delegation: false, byok: false,
+    prompt_caching: false, infra_type: "shared", support_channels: ["email"],
+    whitelabel_level: "none", container_spec: "",
+  };
+  const [newPlan, setNewPlan] = useState<Partial<Plan>>(defaultNewPlan);
 
   // Template state
   const [templateData, setTemplateData] = useState<TemplateData>(getInitialTemplateData);
@@ -405,40 +419,45 @@ export default function AdminPortal() {
       const res = await fetch(`${API_URL}/admin/v1/plans`, {
         headers: { Authorization: `Bearer ${key}` },
       });
-      if (!res.ok) throw new Error("Failed to fetch plans");
+      if (!res.ok) throw new Error("Falha ao buscar planos");
       const data = await res.json();
       setPlans(Array.isArray(data) ? data : []);
     } catch (err) {
-      setPlanError(err instanceof Error ? err.message : "Error loading plans");
+      setPlanError(err instanceof Error ? err.message : "Erro ao carregar planos");
     } finally {
       setPlanLoading(false);
     }
   }, []);
 
   const handleSavePlan = async (planId: string) => {
-    const edits = planEdits[planId];
-    if (!edits || Object.keys(edits).length === 0) {
-      setEditingPlanId(null);
+    if (!editPlanData || Object.keys(editPlanData).length === 0) {
+      setShowEditModal(null);
       return;
     }
     try {
       const res = await fetch(`${API_URL}/admin/v1/plans/${planId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
-        body: JSON.stringify(edits),
+        body: JSON.stringify(editPlanData),
       });
-      if (!res.ok) throw new Error("Update failed");
-      setPlans((prev) => prev.map((p) => p.id === planId ? { ...p, ...edits } : p));
-      setPlanEdits((prev) => { const n = { ...prev }; delete n[planId]; return n; });
-      setEditingPlanId(null);
+      if (!res.ok) throw new Error("Falha ao atualizar");
+      setPlans((prev) => prev.map((p) => p.id === planId ? { ...p, ...editPlanData } : p));
+      setShowEditModal(null);
+      setEditPlanData({});
     } catch {
-      setPlanError("Failed to save plan");
+      setPlanError("Falha ao salvar plano");
     }
+  };
+
+  const openEditModal = (plan: Plan) => {
+    setEditPlanData({ ...plan });
+    setShowEditModal(plan.id);
+    setPlanError("");
   };
 
   const handleCreatePlan = async () => {
     if (!newPlan.id || !newPlan.name) {
-      setPlanError("Plan ID and Name are required");
+      setPlanError("ID e Nome do plano são obrigatórios");
       return;
     }
     try {
@@ -448,27 +467,35 @@ export default function AdminPortal() {
         base_price_cents: Number(newPlan.base_price_cents) || 0,
         max_agents: Number(newPlan.max_agents) || 3,
         max_users: Number(newPlan.max_users) || 1,
+        max_concurrent_users: Number(newPlan.max_concurrent_users) || 1,
         max_storage_mb: Number(newPlan.max_storage_mb) || 5120,
         display_order: Number(newPlan.display_order) || 0,
         features: [],
         discounts: {},
-        stripe_prices: {},
+        stripe_prices: newPlan.stripe_prices || {},
         active: newPlan.active ?? true,
+        channels: newPlan.channels || ["web"],
+        agent_teams: newPlan.agent_teams ?? false,
+        agent_delegation: newPlan.agent_delegation ?? false,
+        byok: newPlan.byok ?? false,
+        prompt_caching: newPlan.prompt_caching ?? false,
+        infra_type: newPlan.infra_type || "shared",
+        support_channels: newPlan.support_channels || ["email"],
+        whitelabel_level: newPlan.whitelabel_level || "none",
+        container_spec: newPlan.container_spec || "",
       };
       const res = await fetch(`${API_URL}/admin/v1/plans`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
         body: JSON.stringify(payload),
       });
-      if (res.status === 409) { setPlanError("A plan with that ID already exists"); return; }
-      if (!res.ok) throw new Error("Create failed");
+      if (res.status === 409) { setPlanError("Já existe um plano com esse ID"); return; }
+      if (!res.ok) throw new Error("Falha ao criar");
       setShowNewPlanForm(false);
-      setNewPlan({ id: "", name: "", tagline: "", base_price_cents: 0, currency: "USD",
-        max_agents: 3, max_users: 1, max_storage_mb: 5120,
-        is_popular: false, is_enterprise: false, display_order: 0, active: true });
+      setNewPlan({ ...defaultNewPlan });
       fetchPlans(apiKey);
     } catch {
-      setPlanError("Failed to create plan");
+      setPlanError("Falha ao criar plano");
     }
   };
 
@@ -479,10 +506,10 @@ export default function AdminPortal() {
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
         body: JSON.stringify({ active: !plan.active }),
       });
-      if (!res.ok) throw new Error("Toggle failed");
+      if (!res.ok) throw new Error("Falha ao alternar");
       setPlans((prev) => prev.map((p) => p.id === plan.id ? { ...p, active: !plan.active } : p));
     } catch {
-      setPlanError("Failed to toggle plan status");
+      setPlanError("Falha ao alternar status do plano");
     }
   };
 
@@ -720,7 +747,7 @@ export default function AdminPortal() {
                 }`}
               >
                 <CreditCard className="w-3.5 h-3.5" />
-                Plans
+                Planos
               </button>
             </div>
           </div>
@@ -1059,15 +1086,15 @@ export default function AdminPortal() {
             <div>
               <h2 className="text-xl font-bold text-text-primary flex items-center gap-2">
                 <CreditCard className="w-5 h-5 text-electric" />
-                Plans Management
+                Gerenciamento de Planos
               </h2>
-              <p className="text-sm text-text-tertiary mt-1">Manage subscription plans and pricing</p>
+              <p className="text-sm text-text-tertiary mt-1">Gerencie planos de assinatura e preços</p>
             </div>
             <button
               onClick={() => { setShowNewPlanForm(true); setPlanError(""); }}
               className="flex items-center gap-2 px-4 py-2 bg-electric text-white rounded-lg text-sm font-semibold hover:bg-electric/90 transition cursor-pointer"
             >
-              + New Plan
+              + Novo Plano
             </button>
           </div>
 
@@ -1079,210 +1106,120 @@ export default function AdminPortal() {
 
           {/* New Plan Form */}
           {showNewPlanForm && (
-            <div className="bg-navy border border-electric/30 rounded-xl p-6 mb-6">
-              <h3 className="text-sm font-semibold text-text-tertiary uppercase tracking-wider mb-4">Create New Plan</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-xs text-text-tertiary mb-1">Plan ID *</label>
-                  <input type="text" value={newPlan.id || ""}
-                    onChange={(e) => setNewPlan((p) => ({ ...p, id: e.target.value.toLowerCase() }))}
-                    placeholder="my-plan"
-                    className="w-full px-3 py-2 rounded-lg bg-midnight border border-border text-text-primary text-sm focus:border-electric focus:outline-none"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs text-text-tertiary mb-1">Name *</label>
-                  <input type="text" value={newPlan.name || ""}
-                    onChange={(e) => setNewPlan((p) => ({ ...p, name: e.target.value }))}
-                    placeholder="My Plan"
-                    className="w-full px-3 py-2 rounded-lg bg-midnight border border-border text-text-primary text-sm focus:border-electric focus:outline-none"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs text-text-tertiary mb-1">
-                    Base Price (USD cents) = {formatPrice(newPlan.base_price_cents ?? 0)}/mo
-                  </label>
-                  <input type="number" min={0} value={newPlan.base_price_cents ?? 0}
-                    onChange={(e) => setNewPlan((p) => ({ ...p, base_price_cents: Number(e.target.value) }))}
-                    className="w-full px-3 py-2 rounded-lg bg-midnight border border-border text-text-primary text-sm focus:border-electric focus:outline-none"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs text-text-tertiary mb-1">Max Agents</label>
-                  <input type="number" min={1} value={newPlan.max_agents ?? 3}
-                    onChange={(e) => setNewPlan((p) => ({ ...p, max_agents: Number(e.target.value) }))}
-                    className="w-full px-3 py-2 rounded-lg bg-midnight border border-border text-text-primary text-sm focus:border-electric focus:outline-none"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs text-text-tertiary mb-1">Max Users</label>
-                  <input type="number" min={1} value={newPlan.max_users ?? 1}
-                    onChange={(e) => setNewPlan((p) => ({ ...p, max_users: Number(e.target.value) }))}
-                    className="w-full px-3 py-2 rounded-lg bg-midnight border border-border text-text-primary text-sm focus:border-electric focus:outline-none"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs text-text-tertiary mb-1">Display Order</label>
-                  <input type="number" min={0} value={newPlan.display_order ?? 0}
-                    onChange={(e) => setNewPlan((p) => ({ ...p, display_order: Number(e.target.value) }))}
-                    className="w-full px-3 py-2 rounded-lg bg-midnight border border-border text-text-primary text-sm focus:border-electric focus:outline-none"
-                  />
-                </div>
-                <div className="md:col-span-3">
-                  <label className="block text-xs text-text-tertiary mb-1">Tagline</label>
-                  <input type="text" value={newPlan.tagline || ""}
-                    onChange={(e) => setNewPlan((p) => ({ ...p, tagline: e.target.value }))}
-                    placeholder="Brief plan description"
-                    className="w-full px-3 py-2 rounded-lg bg-midnight border border-border text-text-primary text-sm focus:border-electric focus:outline-none"
-                  />
-                </div>
-                <div className="flex items-center gap-6">
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" checked={newPlan.is_popular ?? false}
-                      onChange={(e) => setNewPlan((p) => ({ ...p, is_popular: e.target.checked }))}
-                      className="rounded"
-                    />
-                    <span className="text-sm text-text-secondary">Popular</span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" checked={newPlan.is_enterprise ?? false}
-                      onChange={(e) => setNewPlan((p) => ({ ...p, is_enterprise: e.target.checked }))}
-                      className="rounded"
-                    />
-                    <span className="text-sm text-text-secondary">Enterprise</span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" checked={newPlan.active ?? true}
-                      onChange={(e) => setNewPlan((p) => ({ ...p, active: e.target.checked }))}
-                      className="rounded"
-                    />
-                    <span className="text-sm text-text-secondary">Active</span>
-                  </label>
-                </div>
-              </div>
-              <div className="flex items-center gap-3 mt-4">
-                <button onClick={handleCreatePlan}
-                  className="px-4 py-2 bg-electric text-white rounded-lg text-sm font-semibold hover:bg-electric/90 transition cursor-pointer"
-                >
-                  Create Plan
-                </button>
-                <button onClick={() => { setShowNewPlanForm(false); setPlanError(""); }}
-                  className="px-4 py-2 bg-midnight border border-border rounded-lg text-sm text-text-secondary hover:text-text-primary transition cursor-pointer"
-                >
-                  Cancel
-                </button>
+            <PlanFormPanel
+              title="Criar Novo Plano"
+              data={newPlan}
+              onChange={setNewPlan}
+              formatPrice={formatPrice}
+              onSave={handleCreatePlan}
+              onCancel={() => { setShowNewPlanForm(false); setPlanError(""); }}
+              saveLabel="Criar Plano"
+              isNew
+            />
+          )}
+
+          {/* Edit Modal */}
+          {showEditModal && (
+            <div className="fixed inset-0 bg-black/60 z-50 flex items-start justify-center pt-8 px-4 overflow-y-auto">
+              <div className="w-full max-w-4xl mb-8">
+                <PlanFormPanel
+                  title={`Editar Plano: ${showEditModal}`}
+                  data={editPlanData}
+                  onChange={setEditPlanData}
+                  formatPrice={formatPrice}
+                  onSave={() => handleSavePlan(showEditModal)}
+                  onCancel={() => { setShowEditModal(null); setEditPlanData({}); setPlanError(""); }}
+                  saveLabel="Salvar Alterações"
+                  isNew={false}
+                />
               </div>
             </div>
           )}
 
-          {/* Plans List */}
+          {/* Plans Table */}
           {planLoading ? (
-            <div className="text-center py-12 text-text-tertiary">Loading plans...</div>
+            <div className="text-center py-12 text-text-tertiary">Carregando planos...</div>
           ) : (
-            <div className="space-y-4">
-              {plans.map((plan) => {
-                const isEditing = editingPlanId === plan.id;
-                const edits = planEdits[plan.id] || {};
-                const currentName = edits.name ?? plan.name;
-                const currentTagline = edits.tagline ?? plan.tagline;
-                const currentPrice = edits.base_price_cents ?? plan.base_price_cents;
-
-                return (
-                  <div key={plan.id} className={`bg-navy rounded-xl border p-5 ${plan.is_popular ? "border-electric" : "border-border"} ${!plan.active ? "opacity-60" : ""}`}>
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
-                          <span className="font-mono text-xs text-text-tertiary bg-midnight px-2 py-0.5 rounded">{plan.id}</span>
-                          {plan.is_popular && <span className="text-xs bg-electric/20 text-electric px-2 py-0.5 rounded-full">Popular</span>}
-                          {plan.is_enterprise && <span className="text-xs bg-amber/20 text-amber px-2 py-0.5 rounded-full">Enterprise</span>}
-                          {!plan.active && <span className="text-xs bg-red-500/20 text-red-400 px-2 py-0.5 rounded-full">Inactive</span>}
-                        </div>
-
-                        {isEditing ? (
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-2">
+            <div className="bg-navy rounded-xl border border-border overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-border text-text-tertiary text-left">
+                      <th className="px-5 py-3 font-medium">Nome</th>
+                      <th className="px-5 py-3 font-medium">Preço</th>
+                      <th className="px-5 py-3 font-medium">Agentes</th>
+                      <th className="px-5 py-3 font-medium">Usuários</th>
+                      <th className="px-5 py-3 font-medium">Infra</th>
+                      <th className="px-5 py-3 font-medium">Status</th>
+                      <th className="px-5 py-3 font-medium text-right">Ações</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {plans.map((plan) => (
+                      <tr key={plan.id} className={`border-b border-border/50 hover:bg-navy-light transition ${!plan.active ? "opacity-50" : ""}`}>
+                        <td className="px-5 py-3">
+                          <div className="flex items-center gap-2">
                             <div>
-                              <label className="block text-xs text-text-tertiary mb-1">Name</label>
-                              <input type="text" value={currentName}
-                                onChange={(e) => setPlanEdits((p) => ({ ...p, [plan.id]: { ...p[plan.id], name: e.target.value } }))}
-                                className="w-full px-3 py-2 rounded-lg bg-midnight border border-border text-text-primary text-sm focus:border-electric focus:outline-none"
-                              />
+                              <div className="text-text-primary font-semibold">{plan.name}</div>
+                              <div className="text-xs text-text-tertiary font-mono">{plan.id}</div>
                             </div>
-                            <div>
-                              <label className="block text-xs text-text-tertiary mb-1">
-                                Price (cents) = {formatPrice(currentPrice)}/mo
-                              </label>
-                              <input type="number" min={0} value={currentPrice}
-                                onChange={(e) => setPlanEdits((p) => ({ ...p, [plan.id]: { ...p[plan.id], base_price_cents: Number(e.target.value) } }))}
-                                className="w-full px-3 py-2 rounded-lg bg-midnight border border-border text-text-primary text-sm focus:border-electric focus:outline-none"
-                              />
-                            </div>
-                            <div className="md:col-span-2">
-                              <label className="block text-xs text-text-tertiary mb-1">Tagline</label>
-                              <input type="text" value={currentTagline}
-                                onChange={(e) => setPlanEdits((p) => ({ ...p, [plan.id]: { ...p[plan.id], tagline: e.target.value } }))}
-                                className="w-full px-3 py-2 rounded-lg bg-midnight border border-border text-text-primary text-sm focus:border-electric focus:outline-none"
-                              />
-                            </div>
+                            {plan.is_popular && <span className="text-xs bg-electric/20 text-electric px-1.5 py-0.5 rounded-full">Popular</span>}
+                            {plan.is_enterprise && <span className="text-xs bg-amber/20 text-amber px-1.5 py-0.5 rounded-full">Enterprise</span>}
                           </div>
-                        ) : (
-                          <>
-                            <h3 className="text-lg font-bold text-text-primary">{plan.name}</h3>
-                            <p className="text-text-secondary text-sm">{plan.tagline}</p>
-                          </>
-                        )}
-
-                        <div className="grid grid-cols-3 gap-4 mt-3 text-sm">
-                          <div><span className="text-text-tertiary">Price: </span><span className="text-text-primary font-bold">{formatPrice(plan.base_price_cents)}/mo</span></div>
-                          <div><span className="text-text-tertiary">Agents: </span><span className="text-text-primary">{plan.max_agents}</span></div>
-                          <div><span className="text-text-tertiary">Users: </span><span className="text-text-primary">{plan.max_users}</span></div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-2 flex-shrink-0">
-                        <button onClick={() => handleToggleActive(plan)}
-                          className={`px-3 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer ${
-                            plan.active
-                              ? "bg-midnight border border-border text-text-secondary hover:border-red-400 hover:text-red-400"
-                              : "bg-emerald/10 border border-emerald/30 text-emerald hover:bg-emerald/20"
-                          }`}
-                        >
-                          {plan.active ? "Deactivate" : "Activate"}
-                        </button>
-
-                        {isEditing ? (
-                          <>
-                            <button onClick={() => handleSavePlan(plan.id)}
-                              className="px-3 py-1.5 bg-electric text-white rounded-lg text-xs font-semibold hover:bg-electric/90 transition cursor-pointer"
+                        </td>
+                        <td className="px-5 py-3 text-text-primary font-bold">{formatPrice(plan.base_price_cents)}/mês</td>
+                        <td className="px-5 py-3 text-text-primary">{plan.max_agents}</td>
+                        <td className="px-5 py-3 text-text-primary">{plan.max_users}</td>
+                        <td className="px-5 py-3">
+                          <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                            plan.infra_type === "dedicated" ? "bg-cyan/20 text-cyan" :
+                            plan.infra_type === "kvm" ? "bg-amber/20 text-amber" :
+                            "bg-electric/10 text-electric"
+                          }`}>
+                            {plan.infra_type === "shared" ? "Compartilhado" : plan.infra_type === "dedicated" ? "Dedicado" : plan.infra_type === "kvm" ? "KVM" : plan.infra_type || "Compartilhado"}
+                          </span>
+                        </td>
+                        <td className="px-5 py-3">
+                          <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${plan.active ? "bg-emerald/20 text-emerald" : "bg-red-400/20 text-red-400"}`}>
+                            {plan.active ? "Ativo" : "Inativo"}
+                          </span>
+                        </td>
+                        <td className="px-5 py-3 text-right">
+                          <div className="flex items-center gap-2 justify-end">
+                            <button onClick={() => handleToggleActive(plan)}
+                              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer ${
+                                plan.active
+                                  ? "bg-midnight border border-border text-text-secondary hover:border-red-400 hover:text-red-400"
+                                  : "bg-emerald/10 border border-emerald/30 text-emerald hover:bg-emerald/20"
+                              }`}
                             >
-                              Save
+                              {plan.active ? "Desativar" : "Ativar"}
                             </button>
-                            <button onClick={() => {
-                              setPlanEdits((p) => { const n = { ...p }; delete n[plan.id]; return n; });
-                              setEditingPlanId(null);
-                            }}
-                              className="px-3 py-1.5 bg-midnight border border-border text-text-secondary rounded-lg text-xs hover:text-text-primary transition cursor-pointer"
+                            <button onClick={() => openEditModal(plan)}
+                              className="px-3 py-1.5 bg-midnight border border-border text-text-secondary rounded-lg text-xs hover:border-electric hover:text-electric transition cursor-pointer"
                             >
-                              Cancel
+                              Editar
                             </button>
-                          </>
-                        ) : (
-                          <button onClick={() => setEditingPlanId(plan.id)}
-                            className="px-3 py-1.5 bg-midnight border border-border text-text-secondary rounded-lg text-xs hover:border-electric hover:text-electric transition cursor-pointer"
-                          >
-                            Edit
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-
-              {plans.length === 0 && !planLoading && (
-                <div className="text-center py-12 text-text-tertiary">No plans found. Create one above.</div>
-              )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                    {plans.length === 0 && !planLoading && (
+                      <tr>
+                        <td colSpan={7} className="px-5 py-12 text-center text-text-tertiary">
+                          Nenhum plano encontrado. Crie um acima.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
           )}
+
+          <p className="text-xs text-text-tertiary text-center mt-8">
+            {t("dashboard.footer")}
+          </p>
         </main>
       )}
     </div>
@@ -1327,5 +1264,300 @@ function PlanBadge({ plan }: { plan: string }) {
     <span className={`text-xs px-2 py-0.5 rounded-full font-medium capitalize ${styles[plan] || styles.starter}`}>
       {plan}
     </span>
+  );
+}
+
+// --- Plan Form Panel (used for create + edit) ---
+
+const CHANNEL_OPTIONS = [
+  { value: "web", label: "Web" },
+  { value: "telegram", label: "Telegram" },
+  { value: "whatsapp", label: "WhatsApp" },
+  { value: "discord", label: "Discord" },
+  { value: "slack", label: "Slack" },
+  { value: "teams", label: "Teams" },
+];
+
+const SUPPORT_CHANNEL_OPTIONS = [
+  { value: "email", label: "Email" },
+  { value: "telegram", label: "Telegram" },
+  { value: "dedicated", label: "Dedicado" },
+];
+
+const INFRA_OPTIONS = [
+  { value: "shared", label: "Compartilhado" },
+  { value: "dedicated", label: "Dedicado" },
+  { value: "kvm", label: "KVM dedicada" },
+];
+
+const WHITELABEL_OPTIONS = [
+  { value: "none", label: "Nenhum" },
+  { value: "basic", label: "Básico" },
+  { value: "full", label: "Completo (+ domínio próprio)" },
+];
+
+const inputCls = "w-full px-3 py-2 rounded-lg bg-midnight border border-border text-text-primary text-sm focus:border-electric focus:outline-none";
+const labelCls = "block text-xs text-text-tertiary mb-1";
+const sectionTitleCls = "text-sm font-semibold text-electric uppercase tracking-wider mb-3 mt-2";
+const checkboxLabelCls = "flex items-center gap-2 cursor-pointer";
+
+function PlanFormPanel({
+  title, data, onChange, formatPrice, onSave, onCancel, saveLabel, isNew,
+}: {
+  title: string;
+  data: Partial<Plan>;
+  onChange: React.Dispatch<React.SetStateAction<Partial<Plan>>>;
+  formatPrice: (cents: number) => string;
+  onSave: () => void;
+  onCancel: () => void;
+  saveLabel: string;
+  isNew: boolean;
+}) {
+  const set = (fields: Partial<Plan>) => onChange((p) => ({ ...p, ...fields }));
+
+  const toggleArrayItem = (field: "channels" | "support_channels", value: string) => {
+    onChange((p) => {
+      const arr = (p[field] as string[]) || [];
+      return { ...p, [field]: arr.includes(value) ? arr.filter((v) => v !== value) : [...arr, value] };
+    });
+  };
+
+  return (
+    <div className="bg-navy border border-electric/30 rounded-xl p-6 mb-6">
+      <h3 className="text-sm font-semibold text-text-tertiary uppercase tracking-wider mb-4">{title}</h3>
+
+      {/* ── Informações Básicas ── */}
+      <p className={sectionTitleCls}>Informações Básicas</p>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <label className={labelCls}>ID do Plano *</label>
+          <input type="text" value={data.id || ""} disabled={!isNew}
+            onChange={(e) => set({ id: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "") })}
+            placeholder="meu-plano"
+            className={`${inputCls} ${!isNew ? "opacity-50 cursor-not-allowed" : ""}`}
+          />
+        </div>
+        <div>
+          <label className={labelCls}>Nome *</label>
+          <input type="text" value={data.name || ""}
+            onChange={(e) => set({ name: e.target.value })}
+            placeholder="Meu Plano"
+            className={inputCls}
+          />
+        </div>
+        <div>
+          <label className={labelCls}>Preço base (centavos USD) = {formatPrice(data.base_price_cents ?? 0)}/mês</label>
+          <input type="number" min={0} value={data.base_price_cents ?? 0}
+            onChange={(e) => set({ base_price_cents: Number(e.target.value) })}
+            className={inputCls}
+          />
+        </div>
+        <div>
+          <label className={labelCls}>Moeda</label>
+          <input type="text" value={data.currency || "USD"}
+            onChange={(e) => set({ currency: e.target.value.toUpperCase() })}
+            className={inputCls}
+          />
+        </div>
+        <div className="md:col-span-2">
+          <label className={labelCls}>Tagline (resumo)</label>
+          <input type="text" value={data.tagline || ""}
+            onChange={(e) => set({ tagline: e.target.value })}
+            placeholder="Breve descrição do plano"
+            className={inputCls}
+          />
+        </div>
+      </div>
+
+      {/* ── Limites ── */}
+      <p className={sectionTitleCls}>Limites</p>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div>
+          <label className={labelCls}>Máx. agentes</label>
+          <input type="number" min={1} value={data.max_agents ?? 3}
+            onChange={(e) => set({ max_agents: Number(e.target.value) })}
+            className={inputCls}
+          />
+        </div>
+        <div>
+          <label className={labelCls}>Máx. usuários</label>
+          <input type="number" min={1} value={data.max_users ?? 1}
+            onChange={(e) => set({ max_users: Number(e.target.value) })}
+            className={inputCls}
+          />
+        </div>
+        <div>
+          <label className={labelCls}>Máx. usuários simultâneos</label>
+          <input type="number" min={1} value={data.max_concurrent_users ?? 1}
+            onChange={(e) => set({ max_concurrent_users: Number(e.target.value) })}
+            className={inputCls}
+          />
+        </div>
+        <div>
+          <label className={labelCls}>Storage (MB)</label>
+          <input type="number" min={0} value={data.max_storage_mb ?? 5120}
+            onChange={(e) => set({ max_storage_mb: Number(e.target.value) })}
+            className={inputCls}
+          />
+        </div>
+      </div>
+
+      {/* ── Funcionalidades ── */}
+      <p className={sectionTitleCls}>Funcionalidades</p>
+      <div className="flex flex-wrap items-center gap-6">
+        <label className={checkboxLabelCls}>
+          <input type="checkbox" checked={data.agent_teams ?? false}
+            onChange={(e) => set({ agent_teams: e.target.checked })} className="rounded" />
+          <span className="text-sm text-text-secondary">Agent Teams</span>
+        </label>
+        <label className={checkboxLabelCls}>
+          <input type="checkbox" checked={data.agent_delegation ?? false}
+            onChange={(e) => set({ agent_delegation: e.target.checked })} className="rounded" />
+          <span className="text-sm text-text-secondary">Delegação entre agentes</span>
+        </label>
+        <label className={checkboxLabelCls}>
+          <input type="checkbox" checked={data.byok ?? false}
+            onChange={(e) => set({ byok: e.target.checked })} className="rounded" />
+          <span className="text-sm text-text-secondary">BYOK (Bring Your Own Key)</span>
+        </label>
+        <label className={checkboxLabelCls}>
+          <input type="checkbox" checked={data.prompt_caching ?? false}
+            onChange={(e) => set({ prompt_caching: e.target.checked })} className="rounded" />
+          <span className="text-sm text-text-secondary">Prompt Caching</span>
+        </label>
+      </div>
+
+      {/* ── Canais ── */}
+      <p className={sectionTitleCls}>Canais</p>
+      <div className="flex flex-wrap items-center gap-4">
+        {CHANNEL_OPTIONS.map((ch) => (
+          <label key={ch.value} className={checkboxLabelCls}>
+            <input type="checkbox" className="rounded"
+              checked={(data.channels || []).includes(ch.value)}
+              onChange={() => toggleArrayItem("channels", ch.value)}
+            />
+            <span className="text-sm text-text-secondary">{ch.label}</span>
+          </label>
+        ))}
+      </div>
+
+      {/* ── Infraestrutura ── */}
+      <p className={sectionTitleCls}>Infraestrutura</p>
+      <div className="flex flex-wrap items-center gap-6 mb-3">
+        {INFRA_OPTIONS.map((opt) => (
+          <label key={opt.value} className={checkboxLabelCls}>
+            <input type="radio" name="infra_type" value={opt.value}
+              checked={(data.infra_type || "shared") === opt.value}
+              onChange={() => set({ infra_type: opt.value })}
+              className="accent-electric"
+            />
+            <span className="text-sm text-text-secondary">{opt.label}</span>
+          </label>
+        ))}
+      </div>
+      <div>
+        <label className={labelCls}>Especificação do container</label>
+        <input type="text" value={data.container_spec || ""}
+          onChange={(e) => set({ container_spec: e.target.value })}
+          placeholder="Ex: 2 vCPU, 4GB RAM, 50GB SSD"
+          className={inputCls}
+        />
+      </div>
+
+      {/* ── Suporte ── */}
+      <p className={sectionTitleCls}>Suporte</p>
+      <div className="flex flex-wrap items-center gap-4">
+        {SUPPORT_CHANNEL_OPTIONS.map((ch) => (
+          <label key={ch.value} className={checkboxLabelCls}>
+            <input type="checkbox" className="rounded"
+              checked={(data.support_channels || []).includes(ch.value)}
+              onChange={() => toggleArrayItem("support_channels", ch.value)}
+            />
+            <span className="text-sm text-text-secondary">{ch.label}</span>
+          </label>
+        ))}
+      </div>
+
+      {/* ── White-label ── */}
+      <p className={sectionTitleCls}>White-label</p>
+      <div className="flex flex-wrap items-center gap-6">
+        {WHITELABEL_OPTIONS.map((opt) => (
+          <label key={opt.value} className={checkboxLabelCls}>
+            <input type="radio" name="whitelabel_level" value={opt.value}
+              checked={(data.whitelabel_level || "none") === opt.value}
+              onChange={() => set({ whitelabel_level: opt.value })}
+              className="accent-electric"
+            />
+            <span className="text-sm text-text-secondary">{opt.label}</span>
+          </label>
+        ))}
+      </div>
+
+      {/* ── Stripe ── */}
+      <p className={sectionTitleCls}>Stripe</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label className={labelCls}>Stripe Product ID</label>
+          <input type="text" value={data.stripe_product_id || ""}
+            onChange={(e) => set({ stripe_product_id: e.target.value })}
+            placeholder="prod_..."
+            className={inputCls}
+          />
+        </div>
+        <div>
+          <label className={labelCls}>Stripe Price IDs (JSON)</label>
+          <input type="text" value={data.stripe_prices ? JSON.stringify(data.stripe_prices) : "{}"}
+            onChange={(e) => {
+              try { set({ stripe_prices: JSON.parse(e.target.value) }); } catch { /* ignore invalid JSON */ }
+            }}
+            placeholder='{"monthly":"price_...","yearly":"price_..."}'
+            className={`${inputCls} font-mono`}
+          />
+        </div>
+      </div>
+
+      {/* ── Display ── */}
+      <p className={sectionTitleCls}>Exibição</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label className={labelCls}>Ordem de exibição</label>
+          <input type="number" min={0} value={data.display_order ?? 0}
+            onChange={(e) => set({ display_order: Number(e.target.value) })}
+            className={inputCls}
+          />
+        </div>
+        <div className="flex flex-wrap items-center gap-6 pt-5">
+          <label className={checkboxLabelCls}>
+            <input type="checkbox" checked={data.is_popular ?? false}
+              onChange={(e) => set({ is_popular: e.target.checked })} className="rounded" />
+            <span className="text-sm text-text-secondary">Popular</span>
+          </label>
+          <label className={checkboxLabelCls}>
+            <input type="checkbox" checked={data.is_enterprise ?? false}
+              onChange={(e) => set({ is_enterprise: e.target.checked })} className="rounded" />
+            <span className="text-sm text-text-secondary">Enterprise</span>
+          </label>
+          <label className={checkboxLabelCls}>
+            <input type="checkbox" checked={data.active ?? true}
+              onChange={(e) => set({ active: e.target.checked })} className="rounded" />
+            <span className="text-sm text-text-secondary">Ativo</span>
+          </label>
+        </div>
+      </div>
+
+      {/* ── Actions ── */}
+      <div className="flex items-center gap-3 mt-6 pt-4 border-t border-border">
+        <button onClick={onSave}
+          className="px-4 py-2 bg-electric text-white rounded-lg text-sm font-semibold hover:bg-electric/90 transition cursor-pointer"
+        >
+          {saveLabel}
+        </button>
+        <button onClick={onCancel}
+          className="px-4 py-2 bg-midnight border border-border rounded-lg text-sm text-text-secondary hover:text-text-primary transition cursor-pointer"
+        >
+          Cancelar
+        </button>
+      </div>
+    </div>
   );
 }

@@ -184,7 +184,10 @@
       }
     },
     "footer": "All plans include: AES-256 encryption, LGPD compliance, automatic updates, and 99.9% uptime. Cancel anytime.",
-    "taxNote": "Prices shown do not include applicable taxes or fees (such as VAT or sales tax), unless explicitly stated. Infrastructure based on KVM (Kernel-based Virtual Machine) on Google Cloud."
+    "taxNote": "Prices shown do not include applicable taxes or fees (such as VAT or sales tax), unless explicitly stated. Infrastructure based on KVM (Kernel-based Virtual Machine) on Google Cloud.",
+    "popular": "Most popular",
+    "start_cta": "Start free",
+    "enterprise_cta": "Contact sales"
   },
   "testimonials": {
     "title": "Loved by those who use it",

@@ -26,16 +26,22 @@ const periods: PeriodOption[] = [
   { key: "biennial", months: 24, discount: 20, badge: "-20%" },
 ];
 
-const FALLBACK_PRICES: Record<string, number> = {
-  starter: 50,
-  pro: 99,
-};
+interface APIPlan {
+  id: string;
+  name: string;
+  tagline: string;
+  base_price_cents: number;
+  features: string[];
+  discounts: Record<string, number>;
+  is_popular: boolean;
+  is_enterprise: boolean;
+  display_order: number;
+  active: boolean;
+}
 
 function calcPrice(base: number, discount: number): number {
   return Math.round(base * (1 - discount / 100));
 }
-
-const planIds = ["starter", "pro", "enterprise"] as const;
 
 function CheckoutContent() {
   const router = useRouter();
@@ -44,10 +50,10 @@ function CheckoutContent() {
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api-argo.consilium.tec.br";
 
-  const [selectedPlan, setSelectedPlan] = useState("pro");
+  const [selectedPlan, setSelectedPlan] = useState("");
   const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>("monthly");
   const [form, setForm] = useState({ name: "", email: "", company: "" });
-  const [basePrices, setBasePrices] = useState<Record<string, number>>(FALLBACK_PRICES);
+  const [plans, setPlans] = useState<APIPlan[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [showPayment, setShowPayment] = useState(false);
@@ -56,32 +62,33 @@ function CheckoutContent() {
   useEffect(() => {
     fetch(`${API_URL}/api/v1/plans`)
       .then((res) => (res.ok ? res.json() : Promise.reject()))
-      .then((plans: Array<{ id: string; base_price_cents: number; is_enterprise: boolean; active: boolean }>) => {
-        const prices: Record<string, number> = { ...FALLBACK_PRICES };
-        for (const plan of plans) {
-          if (!plan.is_enterprise && plan.active) {
-            prices[plan.id] = Math.round(plan.base_price_cents / 100);
-          }
+      .then((data: APIPlan[]) => {
+        const activePlans = data.filter((p) => p.active).sort((a, b) => a.display_order - b.display_order);
+        setPlans(activePlans);
+        // Auto-select the popular plan or first non-enterprise
+        const popular = activePlans.find((p) => p.is_popular);
+        const firstNonEnterprise = activePlans.find((p) => !p.is_enterprise);
+        if (!selectedPlan) {
+          setSelectedPlan(popular?.id || firstNonEnterprise?.id || activePlans[0]?.id || "");
         }
-        setBasePrices(prices);
       })
-      .catch(() => {
-        // Silently use fallback prices
-      });
+      .catch(() => {});
   }, [API_URL]);
 
   useEffect(() => {
     const plan = searchParams.get("plan");
     const period = searchParams.get("period");
-    if (plan && (["starter", "pro", "enterprise"] as string[]).includes(plan)) setSelectedPlan(plan);
+    if (plan) setSelectedPlan(plan);
     if (period && (["monthly", "semiannual", "annual", "biennial"] as string[]).includes(period))
       setBillingPeriod(period as BillingPeriod);
   }, [searchParams]);
 
   const currentPeriod = periods.find((p) => p.key === billingPeriod)!;
-  const isEnterprise = selectedPlan === "enterprise";
-  const basePrice = basePrices[selectedPlan] ?? 0;
-  const monthlyPrice = isEnterprise ? 0 : calcPrice(basePrice, currentPeriod.discount);
+  const currentPlanData = plans.find((p) => p.id === selectedPlan);
+  const isEnterprise = currentPlanData?.is_enterprise ?? false;
+  const basePrice = currentPlanData ? Math.round(currentPlanData.base_price_cents / 100) : 0;
+  const discount = currentPlanData?.discounts?.[billingPeriod] ?? currentPeriod.discount;
+  const monthlyPrice = isEnterprise ? 0 : calcPrice(basePrice, discount);
   const totalPrice = monthlyPrice * currentPeriod.months;
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -275,15 +282,15 @@ function CheckoutContent() {
               <h2 className="text-sm font-semibold text-text-tertiary uppercase tracking-wider mb-3">
                 {t("step2")}
               </h2>
-              {planIds.map((planId) => {
-                const planFeatures = t.raw(`plans.${planId}.features`) as string[];
-                const isPopular = planId === "pro";
+              {plans.map((plan) => {
+                const planPrice = Math.round(plan.base_price_cents / 100);
+                const planDiscount = plan.discounts?.[billingPeriod] ?? currentPeriod.discount;
                 return (
                   <button
-                    key={planId}
-                    onClick={() => setSelectedPlan(planId)}
+                    key={plan.id}
+                    onClick={() => setSelectedPlan(plan.id)}
                     className={`w-full text-left rounded-lg border p-4 mb-2 transition-all cursor-pointer ${
-                      selectedPlan === planId
+                      selectedPlan === plan.id
                         ? "border-electric bg-navy-light shadow-lg shadow-electric/10"
                         : "border-border bg-navy hover:border-border-light"
                     }`}
@@ -292,35 +299,38 @@ function CheckoutContent() {
                       <div className="flex items-center gap-3">
                         <div
                           className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
-                            selectedPlan === planId ? "border-electric bg-electric" : "border-text-tertiary"
+                            selectedPlan === plan.id ? "border-electric bg-electric" : "border-text-tertiary"
                           }`}
                         >
-                          {selectedPlan === planId && <Check className="w-2.5 h-2.5 text-white" />}
+                          {selectedPlan === plan.id && <Check className="w-2.5 h-2.5 text-white" />}
                         </div>
-                        <span className="text-base font-semibold text-text-primary">{t(`plans.${planId}.name`)}</span>
-                        {isPopular && (
+                        <span className="text-base font-semibold text-text-primary">{plan.name}</span>
+                        {plan.is_popular && (
                           <span className="text-[10px] bg-electric/20 text-electric px-2 py-0.5 rounded-full font-medium">
                             {t("popular")}
                           </span>
                         )}
                       </div>
-                      {planId !== "enterprise" && (
+                      {!plan.is_enterprise && (
                         <div className="text-right">
-                          {currentPeriod.discount > 0 && (
-                            <span className="text-xs text-text-tertiary line-through mr-1">US$ {basePrices[planId] ?? 0}</span>
+                          {planDiscount > 0 && (
+                            <span className="text-xs text-text-tertiary line-through mr-1">US$ {planPrice}</span>
                           )}
                           <span className="text-lg font-bold text-text-primary">
-                            US$ {calcPrice(basePrices[planId] ?? 0, currentPeriod.discount)}
+                            US$ {calcPrice(planPrice, planDiscount)}
                           </span>
                           <span className="text-text-tertiary text-xs">/{t("perMonth")}</span>
                         </div>
                       )}
-                      {planId === "enterprise" && (
+                      {plan.is_enterprise && (
                         <span className="text-text-secondary text-sm">{t("onRequest")}</span>
                       )}
                     </div>
+                    {plan.tagline && (
+                      <p className="text-xs text-text-tertiary ml-7 mb-1">{plan.tagline}</p>
+                    )}
                     <div className="flex flex-wrap gap-1.5 ml-7">
-                      {planFeatures.map((f: string) => (
+                      {(plan.features || []).map((f: string) => (
                         <span key={f} className="text-[11px] text-text-secondary bg-midnight px-2 py-0.5 rounded">
                           {f}
                         </span>
@@ -388,7 +398,7 @@ function CheckoutContent() {
                 <div className="border-t border-border pt-4 mt-6 space-y-2">
                   <div className="flex justify-between text-sm">
                     <span className="text-text-secondary">{t("summary.plan")}</span>
-                    <span className="text-text-primary font-medium capitalize">{selectedPlan}</span>
+                    <span className="text-text-primary font-medium">{currentPlanData?.name || selectedPlan}</span>
                   </div>
                   {!isEnterprise && (
                     <>
