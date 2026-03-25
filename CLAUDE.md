@@ -20,6 +20,12 @@ src/
 ├── messages/               i18n translations (pt-BR, en-US, es-ES, fr-FR, it-IT, de-DE)
 ```
 
+## Gestão de Contexto
+- Sessões curtas e focadas (uma tarefa por sessão)
+- `/compact` manual após ~45 min ou ao mudar de assunto
+- Decisões importantes → registrar aqui na hora
+- Fluxo: branch → commit → push → PR (nunca direto na main)
+
 ## Key Conventions
 
 - Plans/prices fetched dynamically from `GET /api/v1/plans` (API_URL = `NEXT_PUBLIC_API_URL`)
