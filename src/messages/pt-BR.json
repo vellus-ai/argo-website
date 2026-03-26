@@ -459,6 +459,215 @@
       "maxUsers": "Max Usuários"
     }
   },
+  "setup": {
+    "title": "Configurar ARGO",
+    "steps": {
+      "welcome": "Boas-vindas",
+      "branding": "Marca",
+      "provider": "Provedor LLM",
+      "agent": "Primeiro Agente",
+      "channels": "Canais",
+      "review": "Revisão"
+    },
+    "nav": {
+      "next": "Próximo",
+      "back": "Voltar",
+      "skip": "Pular",
+      "finish": "Ativar ARGO"
+    },
+    "step1": {
+      "title": "Bem-vindo ao ARGO!",
+      "subtitle": "Vamos configurar sua plataforma de agentes IA. Leva menos de 5 minutos.",
+      "companyName": "Nome da empresa",
+      "companyNamePlaceholder": "Ex: Vellus Tecnologia",
+      "industry": "Setor de atuação",
+      "industryPlaceholder": "Selecione seu setor",
+      "industries": {
+        "technology": "Tecnologia",
+        "finance": "Finanças",
+        "healthcare": "Saúde",
+        "education": "Educação",
+        "retail": "Varejo",
+        "manufacturing": "Indústria",
+        "services": "Serviços",
+        "legal": "Jurídico",
+        "marketing": "Marketing",
+        "other": "Outro"
+      },
+      "companySize": "Tamanho da empresa",
+      "companySizePlaceholder": "Selecione o tamanho",
+      "sizes": {
+        "solo": "Só eu",
+        "small": "2-10 pessoas",
+        "medium": "11-50 pessoas",
+        "large": "51-200 pessoas",
+        "enterprise": "200+ pessoas"
+      },
+      "useCase": "Principal caso de uso",
+      "useCasePlaceholder": "Descreva brevemente como pretende usar o ARGO"
+    },
+    "step2": {
+      "title": "Personalize sua marca",
+      "subtitle": "Deixe o ARGO com a cara da sua empresa.",
+      "logo": "Logo da empresa",
+      "logoHint": "Arraste ou clique para enviar (PNG, JPG, SVG — máx. 2 MB)",
+      "logoUploaded": "Logo enviado com sucesso",
+      "logoError": "Arquivo muito grande. Máximo 2 MB.",
+      "logoFormatError": "Formato não suportado. Use PNG, JPG ou SVG.",
+      "primaryColor": "Cor principal",
+      "productName": "Nome do produto",
+      "productNamePlaceholder": "Ex: ARGO",
+      "productNameHint": "Nome exibido para seus usuários",
+      "favicon": "Favicon",
+      "faviconHint": "Ícone exibido na aba do navegador (PNG, ICO — máx. 1 MB)"
+    },
+    "step3": {
+      "title": "Conecte seu provedor de IA",
+      "subtitle": "Traga sua chave API ou use nosso provedor incluso no plano.",
+      "provider": "Provedor",
+      "providerPlaceholder": "Selecione o provedor",
+      "providers": {
+        "anthropic": "Anthropic (Claude)",
+        "openai": "OpenAI (GPT)",
+        "google": "Google (Gemini)",
+        "custom": "Outro (Custom)"
+      },
+      "apiKey": "Chave API",
+      "apiKeyPlaceholder": "sk-...",
+      "apiKeyHint": "Sua chave é encriptada com AES-256 e nunca exposta em logs.",
+      "model": "Modelo",
+      "modelPlaceholder": "Selecione o modelo",
+      "models": {
+        "anthropic": {
+          "claude-sonnet-4-20250514": "Claude Sonnet 4",
+          "claude-3-5-haiku-20241022": "Claude 3.5 Haiku"
+        },
+        "openai": {
+          "gpt-4o": "GPT-4o",
+          "gpt-4o-mini": "GPT-4o Mini"
+        },
+        "google": {
+          "gemini-2.5-pro": "Gemini 2.5 Pro",
+          "gemini-2.5-flash": "Gemini 2.5 Flash"
+        }
+      },
+      "testConnection": "Testar conexão",
+      "testing": "Testando...",
+      "testSuccess": "Conexão estabelecida com sucesso!",
+      "testError": "Falha na conexão. Verifique sua chave API.",
+      "skipHint": "Você pode configurar o provedor depois nas configurações."
+    },
+    "step4": {
+      "title": "Crie seu primeiro agente",
+      "subtitle": "Escolha um preset da tripulação ARGO ou crie um agente personalizado.",
+      "agentName": "Nome do agente",
+      "agentNamePlaceholder": "Ex: Assistente Estratégico",
+      "persona": "Descrição / Persona",
+      "personaPlaceholder": "Descreva como seu agente deve se comportar...",
+      "preset": "Preset da tripulação",
+      "presetCustom": "Personalizado",
+      "presets": {
+        "captain": {
+          "name": "Capitão",
+          "area": "Estratégia",
+          "description": "Estrategista pessoal. Prioriza, analisa cenários e sugere próximos passos."
+        },
+        "helmsman": {
+          "name": "Timoneiro",
+          "area": "Operações",
+          "description": "Gerencia tarefas, prazos e processos. Nada escapa."
+        },
+        "lookout": {
+          "name": "Vigia",
+          "area": "Pesquisa",
+          "description": "Investiga mercados, analisa concorrentes e entrega relatórios."
+        },
+        "gunner": {
+          "name": "Artilheiro",
+          "area": "Dados/Finanças",
+          "description": "Dashboards, KPIs, P&L, fluxo de caixa."
+        },
+        "navigator": {
+          "name": "Navegador",
+          "area": "Jurídico",
+          "description": "Revisa contratos, checa compliance e cuida da LGPD."
+        },
+        "blacksmith": {
+          "name": "Ferreiro",
+          "area": "Engenharia",
+          "description": "Arquitetura, code review, DevOps e deploy."
+        }
+      }
+    },
+    "step5": {
+      "title": "Configure seus canais",
+      "subtitle": "Escolha onde seus agentes estarão disponíveis.",
+      "channels": {
+        "webchat": {
+          "name": "Web Chat",
+          "description": "Chat integrado no seu site ou dashboard"
+        },
+        "telegram": {
+          "name": "Telegram",
+          "description": "Bot no Telegram para sua equipe"
+        },
+        "whatsapp": {
+          "name": "WhatsApp",
+          "description": "Atendimento via WhatsApp Business"
+        },
+        "discord": {
+          "name": "Discord",
+          "description": "Bot no servidor Discord da empresa"
+        },
+        "slack": {
+          "name": "Slack",
+          "description": "Integração com workspace Slack"
+        }
+      },
+      "planRestriction": "Disponível a partir do plano {plan}",
+      "skipHint": "Você pode habilitar canais adicionais depois."
+    },
+    "step6": {
+      "title": "Tudo pronto para ativar!",
+      "subtitle": "Revise suas configurações antes de ativar o ARGO.",
+      "sections": {
+        "company": "Empresa",
+        "branding": "Marca",
+        "provider": "Provedor LLM",
+        "agent": "Primeiro Agente",
+        "channels": "Canais"
+      },
+      "fields": {
+        "companyName": "Empresa",
+        "industry": "Setor",
+        "companySize": "Tamanho",
+        "useCase": "Caso de uso",
+        "logo": "Logo",
+        "primaryColor": "Cor principal",
+        "productName": "Nome do produto",
+        "provider": "Provedor",
+        "model": "Modelo",
+        "agentName": "Nome do agente",
+        "preset": "Preset",
+        "persona": "Persona",
+        "activeChannels": "Canais ativos"
+      },
+      "uploaded": "Enviado",
+      "notConfigured": "Não configurado",
+      "custom": "Personalizado",
+      "activating": "Ativando ARGO...",
+      "success": "ARGO ativado com sucesso!",
+      "successSubtitle": "Sua tripulação de IA está pronta. Redirecionando para o dashboard...",
+      "checklist": {
+        "title": "Checklist de ativação",
+        "company": "Perfil da empresa preenchido",
+        "provider": "Provedor LLM configurado",
+        "agent": "Primeiro agente criado",
+        "channels": "Pelo menos 1 canal ativo"
+      },
+      "edit": "Editar"
+    }
+  },
   "common": {
     "languages": {
       "pt-BR": "Português (Brasil)",
