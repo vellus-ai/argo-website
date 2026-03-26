@@ -95,11 +95,17 @@ function reducer(state: SetupState, action: SetupAction): SetupState {
 /* ────────────────────────── Helpers ────────────────────────── */
 
 function serializableState(state: SetupState) {
-  // Exclude File objects from serialization
-  const { logoFile, faviconFile, ...rest } = state;
+  // Exclude File objects and sensitive data from serialization
+  const { logoFile, faviconFile, apiKey, ...rest } = state;
   void logoFile;
   void faviconFile;
+  void apiKey;
   return rest;
+}
+
+/** Sanitize a string for safe use in URL path segments */
+function sanitizePathSegment(input: string): string {
+  return input.replace(/[^a-zA-Z0-9_-]/g, "");
 }
 
 /* ────────────────────────── Step Labels ────────────────────────── */
@@ -149,8 +155,9 @@ export default function WizardShell() {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL;
       if (!apiUrl) return;
 
-      const tenantId = sessionStorage.getItem("argo_tenant_id");
-      if (!tenantId) return;
+      const rawTenantId = sessionStorage.getItem("argo_tenant_id");
+      if (!rawTenantId) return;
+      const tenantId = sanitizePathSegment(rawTenantId);
 
       setSaving(true);
       try {
@@ -230,14 +237,15 @@ export default function WizardShell() {
               <button
                 key={key}
                 onClick={() => stepNum <= state.currentStep && goToStep(stepNum)}
-                className={`flex-1 h-2 rounded-full transition-all ${
+                disabled={stepNum > state.currentStep}
+                className={`flex-1 h-2 rounded-full transition-all relative after:absolute after:-inset-2 after:content-[''] ${
                   isActive
                     ? "bg-electric"
                     : isCompleted
                       ? "bg-electric/60"
                       : "bg-border"
                 } ${stepNum <= state.currentStep ? "cursor-pointer" : "cursor-default"}`}
-                aria-label={t(`steps.${key}`)}
+                aria-label={`${t(`steps.${key}`)} — ${isCompleted ? "completed" : isActive ? "current" : "upcoming"}`}
               />
             );
           })}

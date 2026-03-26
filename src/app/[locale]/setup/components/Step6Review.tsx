@@ -71,11 +71,18 @@ export default function Step6Review({ state, goToStep, saveStep }: Props) {
       // Clean up wizard state
       localStorage.removeItem("argo_setup_wizard");
 
-      // Redirect after delay
+      // Redirect after delay (only allow relative paths or same-origin URLs)
       setTimeout(() => {
         const dashboardUrl = sessionStorage.getItem("argo_dashboard_url");
         if (dashboardUrl) {
-          window.location.href = dashboardUrl;
+          try {
+            const url = new URL(dashboardUrl, window.location.origin);
+            if (url.origin === window.location.origin) {
+              window.location.href = url.href;
+            }
+          } catch {
+            // Invalid URL — ignore
+          }
         }
       }, 4000);
     } catch {

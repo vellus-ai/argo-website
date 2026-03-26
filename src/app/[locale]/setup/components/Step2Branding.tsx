@@ -33,16 +33,6 @@ export default function Step2Branding({ state, updateField }: Props) {
   const [logoError, setLogoError] = useState("");
   const [faviconPreview, setFaviconPreview] = useState("");
 
-  const handleLogoDrop = useCallback(
-    (e: React.DragEvent) => {
-      e.preventDefault();
-      const file = e.dataTransfer.files[0];
-      if (file) processLogoFile(file);
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
-
   const processLogoFile = useCallback(
     (file: File) => {
       setLogoError("");
@@ -64,6 +54,15 @@ export default function Step2Branding({ state, updateField }: Props) {
       reader.readAsDataURL(file);
     },
     [t, updateField]
+  );
+
+  const handleLogoDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      const file = e.dataTransfer.files[0];
+      if (file) processLogoFile(file);
+    },
+    [processLogoFile]
   );
 
   const processFaviconFile = useCallback(

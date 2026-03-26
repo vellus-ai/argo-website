@@ -55,6 +55,9 @@ export default function Step5Channels({ state, updateField }: Props) {
           return (
             <button
               key={key}
+              role="switch"
+              aria-checked={isEnabled}
+              aria-label={t(`channels.${key}.name`)}
               onClick={() => toggleChannel(key)}
               className={`w-full flex items-center gap-4 rounded-xl border p-4 transition ${
                 isEnabled
