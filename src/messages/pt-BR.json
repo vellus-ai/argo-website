@@ -322,6 +322,7 @@
       "fullName": "Nome completo",
       "email": "Email profissional",
       "company": "Empresa",
+      "accountName": "Nome da conta",
       "optional": "opcional"
     },
     "summary": {
@@ -341,6 +342,9 @@
       "and": "e",
       "privacyPolicy": "Política de Privacidade",
       "afterTrial": "Após o trial, será cobrado US$ {monthlyPrice}/mês{totalPrice, plural, =0 {} other { (US$ {totalPrice} a cada {months} meses)}}."
+    },
+    "lgpd": {
+      "consent": "Li e concordo com os"
     },
     "trust": {
       "encryption": "Dados protegidos com criptografia AES-256",
@@ -381,8 +385,13 @@
   },
   "welcome": {
     "noRecord": "Nenhum registro encontrado.",
+    "noSessionId": "Sessão não encontrada. Por favor, refaça o checkout.",
     "goToCheckout": "Ir para o checkout",
     "trialActivated": "Trial ativado com sucesso!",
+    "preparingEnvironment": "Preparando sua Ponte de Comando...",
+    "provisioningStatus": "Estamos configurando seu ambiente. Isso leva alguns segundos.",
+    "provisioningTimeout": "O provisionamento está demorando mais que o esperado. Verifique seu email para as credenciais.",
+    "fetchError": "Não foi possível verificar o status. Verifique seu email para as credenciais.",
     "welcomeTitle": "Bem-vindo a bordo, Capitão {firstName}!",
     "welcomeSubtitle": "Sua tripulação está sendo preparada. Use as credenciais abaixo para acessar sua ponte de comando.",
     "credentials": {
@@ -397,7 +406,7 @@
       "plan": "Plano",
       "period": "Período",
       "freeTrialDays": "7 dias grátis",
-      "company": "Empresa"
+      "account": "Conta"
     },
     "nextSteps": {
       "title": "Próximos passos",

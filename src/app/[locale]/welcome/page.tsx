@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import {
   Anchor,
@@ -11,37 +12,82 @@ import {
   ArrowRight,
   Sparkles,
   PartyPopper,
+  Loader2,
 } from "lucide-react";
 
-interface OnboardingData {
+interface ProvisioningData {
   name: string;
   email: string;
   company: string;
   plan: string;
-  period?: string;
-  monthlyPrice?: number;
-  totalPrice?: number;
-  slug?: string;
+  slug: string;
   userId: string;
   token: string;
-  dashboardUrl?: string;
-  createdAt: string;
+  dashboardUrl: string;
 }
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api-argo.consilium.tec.br";
 
 export default function WelcomePage() {
   const t = useTranslations("welcome");
-  const [data, setData] = useState<OnboardingData | null>(null);
+  const searchParams = useSearchParams();
+  const sessionId = searchParams.get("session_id");
+
+  const [data, setData] = useState<ProvisioningData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [copiedField, setCopiedField] = useState<string | null>(null);
-  const [showConfetti, setShowConfetti] = useState(true);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [pollCount, setPollCount] = useState(0);
+
+  const fetchStatus = useCallback(async () => {
+    if (!sessionId) {
+      setError(t("noSessionId"));
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API_URL}/api/v1/checkout/session-status/${sessionId}`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const result = await res.json();
+
+      if (result.user_id && result.gateway_token) {
+        setData({
+          name: result.name || "",
+          email: result.email || "",
+          company: result.company || "",
+          plan: result.plan || "starter",
+          slug: result.slug || "",
+          userId: result.user_id,
+          token: result.gateway_token,
+          dashboardUrl: result.dashboard_url || `https://${result.slug}-argo.consilium.tec.br`,
+        });
+        setShowConfetti(true);
+        setLoading(false);
+        setTimeout(() => setShowConfetti(false), 3000);
+      } else if (pollCount < 15) {
+        setPollCount((c) => c + 1);
+      } else {
+        setError(t("provisioningTimeout"));
+        setLoading(false);
+      }
+    } catch {
+      if (pollCount < 10) {
+        setPollCount((c) => c + 1);
+      } else {
+        setError(t("fetchError"));
+        setLoading(false);
+      }
+    }
+  }, [sessionId, pollCount, t]);
 
   useEffect(() => {
-    const stored = sessionStorage.getItem("argo_onboarding");
-    if (stored) {
-      setData(JSON.parse(stored));
+    if (loading && !data) {
+      const timer = setTimeout(fetchStatus, pollCount === 0 ? 0 : 2000);
+      return () => clearTimeout(timer);
     }
-    const timer = setTimeout(() => setShowConfetti(false), 3000);
-    return () => clearTimeout(timer);
-  }, []);
+  }, [fetchStatus, loading, data, pollCount]);
 
   const copyToClipboard = (value: string, field: string) => {
     navigator.clipboard.writeText(value);
@@ -49,14 +95,35 @@ export default function WelcomePage() {
     setTimeout(() => setCopiedField(null), 2000);
   };
 
-  if (!data) {
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-midnight flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-12 h-12 text-electric mx-auto mb-4 animate-spin" />
+          <h2 className="text-xl font-semibold text-text-primary mb-2">
+            {t("preparingEnvironment")}
+          </h2>
+          <p className="text-text-secondary">{t("provisioningStatus")}</p>
+          <div className="mt-4 flex items-center justify-center gap-1">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div
+                key={i}
+                className="w-2 h-2 rounded-full bg-electric animate-pulse"
+                style={{ animationDelay: `${i * 0.3}s` }}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !data) {
     return (
       <div className="min-h-screen bg-midnight flex items-center justify-center">
         <div className="text-center">
           <Anchor className="w-12 h-12 text-electric mx-auto mb-4" />
-          <p className="text-text-secondary mb-4">
-            {t("noRecord")}
-          </p>
+          <p className="text-text-secondary mb-4">{error || t("noRecord")}</p>
           <a
             href="/checkout"
             className="text-electric hover:underline inline-flex items-center gap-1"
@@ -69,11 +136,10 @@ export default function WelcomePage() {
   }
 
   const firstName = data.name.split(" ")[0];
-  const dashboardUrl = data.dashboardUrl || `https://${data.slug || (data.company ? data.company.toLowerCase().replace(/\s+/g, "-") : firstName.toLowerCase())}-argo.consilium.tec.br`;
+  const firstLoginUrl = `${data.dashboardUrl}/first-login?uid=${data.userId}&token=${data.token}`;
 
   return (
     <div className="min-h-screen bg-midnight">
-      {/* Confetti animation */}
       {showConfetti && (
         <div className="fixed inset-0 pointer-events-none z-50 flex items-start justify-center overflow-hidden">
           {Array.from({ length: 20 }).map((_, i) => (
@@ -100,7 +166,6 @@ export default function WelcomePage() {
         </div>
       )}
 
-      {/* Header */}
       <header className="py-6 px-4">
         <div className="max-w-3xl mx-auto flex items-center gap-2">
           <Anchor className="w-6 h-6 text-electric" />
@@ -109,13 +174,11 @@ export default function WelcomePage() {
       </header>
 
       <main className="max-w-3xl mx-auto px-4 py-8">
-        {/* Welcome card */}
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-2 bg-emerald/10 text-emerald text-sm font-medium px-4 py-2 rounded-full mb-6">
             <PartyPopper className="w-4 h-4" />
             {t("trialActivated")}
           </div>
-
           <h1 className="text-3xl md:text-4xl font-bold text-text-primary mb-3">
             {t("welcomeTitle", { firstName })}
           </h1>
@@ -129,36 +192,25 @@ export default function WelcomePage() {
           <h2 className="text-sm font-semibold text-text-tertiary uppercase tracking-wider mb-6">
             {t("credentials.title")}
           </h2>
-
           <div className="space-y-4">
-            {/* Dashboard URL */}
             <div>
               <label className="block text-xs text-text-tertiary mb-1">
                 {t("credentials.dashboard")}
               </label>
               <div className="flex items-center gap-2">
                 <code className="flex-1 bg-midnight rounded-lg px-4 py-2.5 text-cyan font-mono text-sm border border-border">
-                  {dashboardUrl}
+                  {data.dashboardUrl}
                 </code>
                 <button
-                  onClick={() => copyToClipboard(dashboardUrl, "url")}
+                  onClick={() => copyToClipboard(data.dashboardUrl, "url")}
                   className="p-2.5 rounded-lg border border-border hover:border-electric transition"
-                  title={t("credentials.copy")}
                 >
-                  {copiedField === "url" ? (
-                    <Check className="w-4 h-4 text-emerald" />
-                  ) : (
-                    <Copy className="w-4 h-4 text-text-tertiary" />
-                  )}
+                  {copiedField === "url" ? <Check className="w-4 h-4 text-emerald" /> : <Copy className="w-4 h-4 text-text-tertiary" />}
                 </button>
               </div>
             </div>
-
-            {/* User ID */}
             <div>
-              <label className="block text-xs text-text-tertiary mb-1">
-                User ID
-              </label>
+              <label className="block text-xs text-text-tertiary mb-1">User ID</label>
               <div className="flex items-center gap-2">
                 <code className="flex-1 bg-midnight rounded-lg px-4 py-2.5 text-text-primary font-mono text-sm border border-border">
                   {data.userId}
@@ -166,52 +218,33 @@ export default function WelcomePage() {
                 <button
                   onClick={() => copyToClipboard(data.userId, "userId")}
                   className="p-2.5 rounded-lg border border-border hover:border-electric transition"
-                  title={t("credentials.copy")}
                 >
-                  {copiedField === "userId" ? (
-                    <Check className="w-4 h-4 text-emerald" />
-                  ) : (
-                    <Copy className="w-4 h-4 text-text-tertiary" />
-                  )}
+                  {copiedField === "userId" ? <Check className="w-4 h-4 text-emerald" /> : <Copy className="w-4 h-4 text-text-tertiary" />}
                 </button>
               </div>
             </div>
-
-            {/* Gateway Token */}
             <div>
-              <label className="block text-xs text-text-tertiary mb-1">
-                Gateway Token
-              </label>
+              <label className="block text-xs text-text-tertiary mb-1">Gateway Token</label>
               <div className="flex items-center gap-2">
-                <code className="flex-1 bg-midnight rounded-lg px-4 py-2.5 text-amber font-mono text-sm border border-border">
+                <code className="flex-1 bg-midnight rounded-lg px-4 py-2.5 text-amber font-mono text-sm border border-border break-all">
                   {data.token}
                 </code>
                 <button
                   onClick={() => copyToClipboard(data.token, "token")}
                   className="p-2.5 rounded-lg border border-border hover:border-electric transition"
-                  title={t("credentials.copy")}
                 >
-                  {copiedField === "token" ? (
-                    <Check className="w-4 h-4 text-emerald" />
-                  ) : (
-                    <Copy className="w-4 h-4 text-text-tertiary" />
-                  )}
+                  {copiedField === "token" ? <Check className="w-4 h-4 text-emerald" /> : <Copy className="w-4 h-4 text-text-tertiary" />}
                 </button>
               </div>
             </div>
           </div>
-
-          {/* Email notification */}
           <div className="mt-6 flex items-start gap-3 bg-midnight rounded-lg p-4 border border-border">
             <Mail className="w-5 h-5 text-electric mt-0.5 shrink-0" />
             <div>
               <p className="text-sm text-text-primary">
-                {t("credentials.emailSent")}{" "}
-                <span className="text-electric font-medium">{data.email}</span>
+                {t("credentials.emailSent")} <span className="text-electric font-medium">{data.email}</span>
               </p>
-              <p className="text-xs text-text-tertiary mt-1">
-                {t("credentials.tokenWarning")}
-              </p>
+              <p className="text-xs text-text-tertiary mt-1">{t("credentials.tokenWarning")}</p>
             </div>
           </div>
         </div>
@@ -224,9 +257,7 @@ export default function WelcomePage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div>
               <p className="text-xs text-text-tertiary">{t("trialSummary.plan")}</p>
-              <p className="text-text-primary font-medium capitalize">
-                {data.plan}
-              </p>
+              <p className="text-text-primary font-medium capitalize">{data.plan}</p>
             </div>
             <div>
               <p className="text-xs text-text-tertiary">{t("trialSummary.period")}</p>
@@ -234,71 +265,37 @@ export default function WelcomePage() {
             </div>
             <div>
               <p className="text-xs text-text-tertiary">Email</p>
-              <p className="text-text-primary font-medium text-sm truncate">
-                {data.email}
-              </p>
+              <p className="text-text-primary font-medium text-sm truncate">{data.email}</p>
             </div>
             <div>
-              <p className="text-xs text-text-tertiary">{t("trialSummary.company")}</p>
-              <p className="text-text-primary font-medium">
-                {data.company || "\u2014"}
-              </p>
+              <p className="text-xs text-text-tertiary">{t("trialSummary.account")}</p>
+              <p className="text-text-primary font-medium">{data.company || data.name || "\u2014"}</p>
             </div>
           </div>
         </div>
 
         {/* Next steps */}
         <div className="rounded-xl border border-electric/30 bg-electric/5 p-6 mb-8">
-          <h2 className="text-lg font-semibold text-text-primary mb-4">
-            {t("nextSteps.title")}
-          </h2>
+          <h2 className="text-lg font-semibold text-text-primary mb-4">{t("nextSteps.title")}</h2>
           <ol className="space-y-3">
-            <li className="flex items-start gap-3">
-              <span className="flex items-center justify-center w-6 h-6 rounded-full bg-electric text-white text-xs font-bold shrink-0 mt-0.5">
-                1
-              </span>
-              <div>
-                <p className="text-text-primary font-medium">
-                  {t("nextSteps.step1.title")}
-                </p>
-                <p className="text-sm text-text-secondary">
-                  {t("nextSteps.step1.description")}
-                </p>
-              </div>
-            </li>
-            <li className="flex items-start gap-3">
-              <span className="flex items-center justify-center w-6 h-6 rounded-full bg-electric text-white text-xs font-bold shrink-0 mt-0.5">
-                2
-              </span>
-              <div>
-                <p className="text-text-primary font-medium">
-                  {t("nextSteps.step2.title")}
-                </p>
-                <p className="text-sm text-text-secondary">
-                  {t("nextSteps.step2.description")}
-                </p>
-              </div>
-            </li>
-            <li className="flex items-start gap-3">
-              <span className="flex items-center justify-center w-6 h-6 rounded-full bg-electric text-white text-xs font-bold shrink-0 mt-0.5">
-                3
-              </span>
-              <div>
-                <p className="text-text-primary font-medium">
-                  {t("nextSteps.step3.title")}
-                </p>
-                <p className="text-sm text-text-secondary">
-                  {t("nextSteps.step3.description")}
-                </p>
-              </div>
-            </li>
+            {[1, 2, 3].map((step) => (
+              <li key={step} className="flex items-start gap-3">
+                <span className="flex items-center justify-center w-6 h-6 rounded-full bg-electric text-white text-xs font-bold shrink-0 mt-0.5">
+                  {step}
+                </span>
+                <div>
+                  <p className="text-text-primary font-medium">{t(`nextSteps.step${step}.title`)}</p>
+                  <p className="text-sm text-text-secondary">{t(`nextSteps.step${step}.description`)}</p>
+                </div>
+              </li>
+            ))}
           </ol>
         </div>
 
         {/* CTA */}
         <div className="text-center">
           <a
-            href={dashboardUrl}
+            href={firstLoginUrl}
             className="inline-flex items-center gap-2 rounded-xl bg-electric hover:bg-electric-hover text-white font-semibold py-3 px-8 transition-all shadow-lg shadow-electric/25"
           >
             <Rocket className="w-5 h-5" />
@@ -314,7 +311,6 @@ export default function WelcomePage() {
         </div>
       </main>
 
-      {/* Footer */}
       <footer className="py-8 px-4 mt-16">
         <div className="max-w-3xl mx-auto text-center text-text-tertiary text-sm">
           &copy; 2026 Vellus Tecnologia

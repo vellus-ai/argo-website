@@ -140,12 +140,13 @@
       "pro": { "name": "Pro", "features": ["10 agentes IA", "5 usuarios", "20 GB storage", "Todos los canales", "White-label", "Agent Teams + Delegacion", "Container dedicado"] },
       "enterprise": { "name": "Enterprise", "features": ["Agentes ilimitados", "Usuarios ilimitados", "Storage ilimitado", "KVM dedicada", "SLA 99.9%", "SSO/SAML"] }
     },
-    "form": { "fullName": "Nombre completo", "email": "Email profesional", "company": "Empresa", "optional": "opcional" },
+    "form": { "fullName": "Nombre completo", "email": "Email profesional", "company": "Empresa", "accountName": "Nombre de la cuenta", "optional": "opcional" },
     "summary": { "plan": "Plan", "period": "Periodo", "monthlyValue": "Valor mensual", "totalPeriod": "Total periodo", "trialFree": "7 dias gratis", "todayYouPay": "Hoy pagas" },
     "submitting": "Preparando tu tripulacion...",
     "startTrial": "Iniciar prueba gratuita",
     "talkToSales": "Hablar con ventas",
     "terms": { "prefix": "Al continuar, aceptas los", "termsOfUse": "Terminos de Uso", "and": "y", "privacyPolicy": "Politica de Privacidad", "afterTrial": "Despues del trial, se cobrara US$ {monthlyPrice}/mes{totalPrice, plural, =0 {} other { (US$ {totalPrice} cada {months} meses)}}." },
+    "lgpd": { "consent": "He leído y acepto los" },
     "trust": { "encryption": "Datos protegidos con encriptacion AES-256", "setup": "Setup en menos de 5 minutos" },
     "faqTitle": "Preguntas frecuentes sobre facturacion",
     "faqs": {
@@ -161,12 +162,17 @@
   },
   "welcome": {
     "noRecord": "Ningun registro encontrado.",
+    "noSessionId": "Sesión no encontrada. Por favor, rehaga el checkout.",
     "goToCheckout": "Ir al checkout",
     "trialActivated": "Trial activado con exito!",
+    "preparingEnvironment": "Preparando su Puente de Mando...",
+    "provisioningStatus": "Estamos configurando su entorno. Esto toma unos segundos.",
+    "provisioningTimeout": "El aprovisionamiento está tardando más de lo esperado. Revise su correo electrónico.",
+    "fetchError": "No se pudo verificar el estado. Revise su correo electrónico.",
     "welcomeTitle": "Bienvenido a bordo, Capitan {firstName}!",
     "welcomeSubtitle": "Tu tripulacion esta siendo preparada. Usa las credenciales abajo para acceder a tu puente de mando.",
     "credentials": { "title": "Tus credenciales de acceso", "dashboard": "Puente de Mando (Dashboard)", "copy": "Copiar", "emailSent": "Enviamos estas credenciales a", "tokenWarning": "Guarda el token en un lugar seguro." },
-    "trialSummary": { "title": "Resumen del trial", "plan": "Plan", "period": "Periodo", "freeTrialDays": "7 dias gratis", "company": "Empresa" },
+    "trialSummary": { "title": "Resumen del trial", "plan": "Plan", "period": "Periodo", "freeTrialDays": "7 dias gratis", "account": "Cuenta" },
     "nextSteps": {
       "title": "Proximos pasos",
       "step1": { "title": "Accede a tu puente de mando", "description": "Abre el enlace e ingresa tu User ID + Token" },

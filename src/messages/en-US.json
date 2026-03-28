@@ -322,6 +322,7 @@
       "fullName": "Full name",
       "email": "Professional email",
       "company": "Company",
+      "accountName": "Account name",
       "optional": "optional"
     },
     "summary": {
@@ -341,6 +342,9 @@
       "and": "and",
       "privacyPolicy": "Privacy Policy",
       "afterTrial": "After the trial, you will be charged US$ {monthlyPrice}/mo{totalPrice, plural, =0 {} other { (US$ {totalPrice} every {months} months)}}."
+    },
+    "lgpd": {
+      "consent": "I have read and agree to the"
     },
     "trust": {
       "encryption": "Data protected with AES-256 encryption",
@@ -381,8 +385,13 @@
   },
   "welcome": {
     "noRecord": "No record found.",
+    "noSessionId": "Session not found. Please redo the checkout.",
     "goToCheckout": "Go to checkout",
     "trialActivated": "Trial activated successfully!",
+    "preparingEnvironment": "Preparing your Command Bridge...",
+    "provisioningStatus": "We're setting up your environment. This takes a few seconds.",
+    "provisioningTimeout": "Provisioning is taking longer than expected. Check your email for credentials.",
+    "fetchError": "Could not verify status. Check your email for credentials.",
     "welcomeTitle": "Welcome aboard, Captain {firstName}!",
     "welcomeSubtitle": "Your crew is being prepared. Use the credentials below to access your command bridge.",
     "credentials": {
@@ -397,7 +406,7 @@
       "plan": "Plan",
       "period": "Period",
       "freeTrialDays": "7 days free",
-      "company": "Company"
+      "account": "Account"
     },
     "nextSteps": {
       "title": "Next steps",

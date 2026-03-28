@@ -53,6 +53,7 @@ function CheckoutContent() {
   const [selectedPlan, setSelectedPlan] = useState("");
   const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>("monthly");
   const [form, setForm] = useState({ name: "", email: "", company: "" });
+  const [lgpdConsent, setLgpdConsent] = useState(false);
   const [plans, setPlans] = useState<APIPlan[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
@@ -382,7 +383,7 @@ function CheckoutContent() {
 
                 <div>
                   <label htmlFor="company" className="block text-sm text-text-secondary mb-1.5">
-                    {t("form.company")} <span className="text-text-tertiary">({t("form.optional")})</span>
+                    {t("form.accountName")} <span className="text-text-tertiary">({t("form.optional")})</span>
                   </label>
                   <input
                     id="company"
@@ -435,9 +436,24 @@ function CheckoutContent() {
                   </div>
                 </div>
 
+                {/* LGPD Consent (required) */}
+                <label className="flex items-start gap-3 mt-4 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={lgpdConsent}
+                    onChange={(e) => setLgpdConsent(e.target.checked)}
+                    className="mt-1 w-4 h-4 rounded border-border bg-midnight text-electric focus:ring-electric focus:ring-1 cursor-pointer"
+                  />
+                  <span className="text-xs text-text-secondary group-hover:text-text-primary transition">
+                    {t("lgpd.consent")}{" "}
+                    <a href="#" className="text-electric hover:underline">{t("terms.termsOfUse")}</a> {t("terms.and")}{" "}
+                    <a href="#" className="text-electric hover:underline">{t("terms.privacyPolicy")}</a>.
+                  </span>
+                </label>
+
                 <button
                   type="submit"
-                  disabled={submitting || !form.name || !form.email}
+                  disabled={submitting || !form.name || !form.email || !lgpdConsent}
                   className="w-full mt-4 flex items-center justify-center gap-2 rounded-xl bg-electric hover:bg-electric-hover disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 transition-all cursor-pointer"
                 >
                   {submitting ? (
