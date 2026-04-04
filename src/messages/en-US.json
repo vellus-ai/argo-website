@@ -257,19 +257,39 @@
     "columns": {
       "product": {
         "title": "Product",
-        "links": ["Features", "Pricing", "Changelog", "Status"]
+        "links": [
+          "Features",
+          "Pricing",
+          "Changelog",
+          "Status"
+        ]
       },
       "company": {
         "title": "Company",
-        "links": ["About us", "Blog", "Careers", "Contact"]
+        "links": [
+          "About us",
+          "Blog",
+          "Careers",
+          "Contact"
+        ]
       },
       "resources": {
         "title": "Resources",
-        "links": ["Documentation", "API", "Marketplace", "Community"]
+        "links": [
+          "Documentation",
+          "API",
+          "Marketplace",
+          "Community"
+        ]
       },
       "legal": {
         "title": "Legal",
-        "links": ["Terms of Service", "Privacy", "LGPD", "Cookies"]
+        "links": [
+          "Terms of Service",
+          "Privacy",
+          "LGPD",
+          "Cookies"
+        ]
       }
     },
     "byVellus": "by Vellus",
@@ -307,21 +327,44 @@
     "plans": {
       "starter": {
         "name": "Starter",
-        "features": ["3 AI agents", "1 user", "5 GB storage", "Telegram + WhatsApp + Web", "BYOK", "Agent Teams"]
+        "features": [
+          "3 AI agents",
+          "1 user",
+          "5 GB storage",
+          "Telegram + WhatsApp + Web",
+          "BYOK",
+          "Agent Teams"
+        ]
       },
       "pro": {
         "name": "Pro",
-        "features": ["10 AI agents", "5 users", "20 GB storage", "All channels", "White-label", "Agent Teams + Delegation", "Dedicated container"]
+        "features": [
+          "10 AI agents",
+          "5 users",
+          "20 GB storage",
+          "All channels",
+          "White-label",
+          "Agent Teams + Delegation",
+          "Dedicated container"
+        ]
       },
       "enterprise": {
         "name": "Enterprise",
-        "features": ["Unlimited agents", "Unlimited users", "Unlimited storage", "Dedicated KVM", "99.9% SLA", "SSO/SAML"]
+        "features": [
+          "Unlimited agents",
+          "Unlimited users",
+          "Unlimited storage",
+          "Dedicated KVM",
+          "99.9% SLA",
+          "SSO/SAML"
+        ]
       }
     },
     "form": {
       "fullName": "Full name",
       "email": "Professional email",
       "company": "Company",
+      "accountName": "Account name",
       "optional": "optional"
     },
     "summary": {
@@ -341,6 +384,9 @@
       "and": "and",
       "privacyPolicy": "Privacy Policy",
       "afterTrial": "After the trial, you will be charged US$ {monthlyPrice}/mo{totalPrice, plural, =0 {} other { (US$ {totalPrice} every {months} months)}}."
+    },
+    "lgpd": {
+      "consent": "I have read and agree to the"
     },
     "trust": {
       "encryption": "Data protected with AES-256 encryption",
@@ -381,8 +427,13 @@
   },
   "welcome": {
     "noRecord": "No record found.",
+    "noSessionId": "Session not found. Please redo the checkout.",
     "goToCheckout": "Go to checkout",
     "trialActivated": "Trial activated successfully!",
+    "preparingEnvironment": "Preparing your Command Bridge...",
+    "provisioningStatus": "We're setting up your environment. This takes a few seconds.",
+    "provisioningTimeout": "Provisioning is taking longer than expected. Check your email for credentials.",
+    "fetchError": "Could not verify status. Check your email for credentials.",
     "welcomeTitle": "Welcome aboard, Captain {firstName}!",
     "welcomeSubtitle": "Your crew is being prepared. Use the credentials below to access your command bridge.",
     "credentials": {
@@ -397,7 +448,7 @@
       "plan": "Plan",
       "period": "Period",
       "freeTrialDays": "7 days free",
-      "company": "Company"
+      "account": "Account"
     },
     "nextSteps": {
       "title": "Next steps",
@@ -676,6 +727,20 @@
       "fr-FR": "Français",
       "it-IT": "Italiano",
       "de-DE": "Deutsch"
+    }
+  },
+  "legal": {
+    "terms": {
+      "title": "Terms of Service",
+      "comingSoon": "Coming soon",
+      "backToCheckout": "Back to checkout",
+      "description": "The complete ARGO Terms of Service will be published here soon."
+    },
+    "privacy": {
+      "title": "Privacy Policy",
+      "comingSoon": "Coming soon",
+      "backToCheckout": "Back to checkout",
+      "description": "The complete ARGO Privacy Policy will be published here soon."
     }
   }
 }

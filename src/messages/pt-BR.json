@@ -257,19 +257,39 @@
     "columns": {
       "product": {
         "title": "Produto",
-        "links": ["Funcionalidades", "Preços", "Changelog", "Status"]
+        "links": [
+          "Funcionalidades",
+          "Preços",
+          "Changelog",
+          "Status"
+        ]
       },
       "company": {
         "title": "Empresa",
-        "links": ["Sobre nós", "Blog", "Carreiras", "Contato"]
+        "links": [
+          "Sobre nós",
+          "Blog",
+          "Carreiras",
+          "Contato"
+        ]
       },
       "resources": {
         "title": "Recursos",
-        "links": ["Documentação", "API", "Marketplace", "Comunidade"]
+        "links": [
+          "Documentação",
+          "API",
+          "Marketplace",
+          "Comunidade"
+        ]
       },
       "legal": {
         "title": "Legal",
-        "links": ["Termos de Uso", "Privacidade", "LGPD", "Cookies"]
+        "links": [
+          "Termos de Uso",
+          "Privacidade",
+          "LGPD",
+          "Cookies"
+        ]
       }
     },
     "byVellus": "by Vellus",
@@ -307,21 +327,44 @@
     "plans": {
       "starter": {
         "name": "Starter",
-        "features": ["3 agentes IA", "1 usuário", "5 GB storage", "Telegram + WhatsApp + Web", "BYOK", "Agent Teams"]
+        "features": [
+          "3 agentes IA",
+          "1 usuário",
+          "5 GB storage",
+          "Telegram + WhatsApp + Web",
+          "BYOK",
+          "Agent Teams"
+        ]
       },
       "pro": {
         "name": "Pro",
-        "features": ["10 agentes IA", "5 usuários", "20 GB storage", "Todos os canais", "White-label", "Agent Teams + Delegação", "Container dedicado"]
+        "features": [
+          "10 agentes IA",
+          "5 usuários",
+          "20 GB storage",
+          "Todos os canais",
+          "White-label",
+          "Agent Teams + Delegação",
+          "Container dedicado"
+        ]
       },
       "enterprise": {
         "name": "Enterprise",
-        "features": ["Agentes ilimitados", "Usuários ilimitados", "Storage ilimitado", "KVM dedicada", "SLA 99.9%", "SSO/SAML"]
+        "features": [
+          "Agentes ilimitados",
+          "Usuários ilimitados",
+          "Storage ilimitado",
+          "KVM dedicada",
+          "SLA 99.9%",
+          "SSO/SAML"
+        ]
       }
     },
     "form": {
       "fullName": "Nome completo",
       "email": "Email profissional",
       "company": "Empresa",
+      "accountName": "Nome da conta",
       "optional": "opcional"
     },
     "summary": {
@@ -341,6 +384,9 @@
       "and": "e",
       "privacyPolicy": "Política de Privacidade",
       "afterTrial": "Após o trial, será cobrado US$ {monthlyPrice}/mês{totalPrice, plural, =0 {} other { (US$ {totalPrice} a cada {months} meses)}}."
+    },
+    "lgpd": {
+      "consent": "Li e concordo com os"
     },
     "trust": {
       "encryption": "Dados protegidos com criptografia AES-256",
@@ -381,8 +427,13 @@
   },
   "welcome": {
     "noRecord": "Nenhum registro encontrado.",
+    "noSessionId": "Sessão não encontrada. Por favor, refaça o checkout.",
     "goToCheckout": "Ir para o checkout",
     "trialActivated": "Trial ativado com sucesso!",
+    "preparingEnvironment": "Preparando sua Ponte de Comando...",
+    "provisioningStatus": "Estamos configurando seu ambiente. Isso leva alguns segundos.",
+    "provisioningTimeout": "O provisionamento está demorando mais que o esperado. Verifique seu email para as credenciais.",
+    "fetchError": "Não foi possível verificar o status. Verifique seu email para as credenciais.",
     "welcomeTitle": "Bem-vindo a bordo, Capitão {firstName}!",
     "welcomeSubtitle": "Sua tripulação está sendo preparada. Use as credenciais abaixo para acessar sua ponte de comando.",
     "credentials": {
@@ -397,7 +448,7 @@
       "plan": "Plano",
       "period": "Período",
       "freeTrialDays": "7 dias grátis",
-      "company": "Empresa"
+      "account": "Conta"
     },
     "nextSteps": {
       "title": "Próximos passos",
@@ -676,6 +727,20 @@
       "fr-FR": "Français",
       "it-IT": "Italiano",
       "de-DE": "Deutsch"
+    }
+  },
+  "legal": {
+    "terms": {
+      "title": "Termos de Uso",
+      "comingSoon": "Conteudo em breve",
+      "backToCheckout": "Voltar ao checkout",
+      "description": "Os termos de uso completos do ARGO serao publicados aqui em breve."
+    },
+    "privacy": {
+      "title": "Politica de Privacidade",
+      "comingSoon": "Conteudo em breve",
+      "backToCheckout": "Voltar ao checkout",
+      "description": "A politica de privacidade completa do ARGO sera publicada aqui em breve."
     }
   }
 }
