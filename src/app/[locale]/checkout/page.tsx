@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "@/i18n/routing";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Anchor, Rocket, Shield, Zap, Check, ChevronDown, CreditCard } from "lucide-react";
 import { loadStripe } from "@stripe/stripe-js";
 import { EmbeddedCheckoutProvider, EmbeddedCheckout } from "@stripe/react-stripe-js";
@@ -47,6 +47,7 @@ function CheckoutContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const t = useTranslations("checkout");
+  const locale = useLocale();
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api-argo.consilium.tec.br";
 
@@ -446,8 +447,8 @@ function CheckoutContent() {
                   />
                   <span className="text-xs text-text-secondary group-hover:text-text-primary transition">
                     {t("lgpd.consent")}{" "}
-                    <a href="#" className="text-electric hover:underline">{t("terms.termsOfUse")}</a> {t("terms.and")}{" "}
-                    <a href="#" className="text-electric hover:underline">{t("terms.privacyPolicy")}</a>.
+                    <a href={`/${locale}/terms`} target="_blank" rel="noopener noreferrer" className="text-electric hover:underline">{t("terms.termsOfUse")}</a> {t("terms.and")}{" "}
+                    <a href={`/${locale}/privacy`} target="_blank" rel="noopener noreferrer" className="text-electric hover:underline">{t("terms.privacyPolicy")}</a>.
                   </span>
                 </label>
 
@@ -471,8 +472,8 @@ function CheckoutContent() {
 
                 <p className="text-xs text-text-tertiary text-center mt-3">
                   {t("terms.prefix")}{" "}
-                  <a href="#" className="text-electric hover:underline">{t("terms.termsOfUse")}</a> {t("terms.and")}{" "}
-                  <a href="#" className="text-electric hover:underline">{t("terms.privacyPolicy")}</a>.
+                  <a href={`/${locale}/terms`} target="_blank" rel="noopener noreferrer" className="text-electric hover:underline">{t("terms.termsOfUse")}</a> {t("terms.and")}{" "}
+                  <a href={`/${locale}/privacy`} target="_blank" rel="noopener noreferrer" className="text-electric hover:underline">{t("terms.privacyPolicy")}</a>.
                   {!isEnterprise && (
                     <span className="block mt-1">
                       {t("terms.afterTrial", { monthlyPrice, totalPrice, months: currentPeriod.months })}

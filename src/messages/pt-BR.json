@@ -257,19 +257,39 @@
     "columns": {
       "product": {
         "title": "Produto",
-        "links": ["Funcionalidades", "Preços", "Changelog", "Status"]
+        "links": [
+          "Funcionalidades",
+          "Preços",
+          "Changelog",
+          "Status"
+        ]
       },
       "company": {
         "title": "Empresa",
-        "links": ["Sobre nós", "Blog", "Carreiras", "Contato"]
+        "links": [
+          "Sobre nós",
+          "Blog",
+          "Carreiras",
+          "Contato"
+        ]
       },
       "resources": {
         "title": "Recursos",
-        "links": ["Documentação", "API", "Marketplace", "Comunidade"]
+        "links": [
+          "Documentação",
+          "API",
+          "Marketplace",
+          "Comunidade"
+        ]
       },
       "legal": {
         "title": "Legal",
-        "links": ["Termos de Uso", "Privacidade", "LGPD", "Cookies"]
+        "links": [
+          "Termos de Uso",
+          "Privacidade",
+          "LGPD",
+          "Cookies"
+        ]
       }
     },
     "byVellus": "by Vellus",
@@ -307,15 +327,37 @@
     "plans": {
       "starter": {
         "name": "Starter",
-        "features": ["3 agentes IA", "1 usuário", "5 GB storage", "Telegram + WhatsApp + Web", "BYOK", "Agent Teams"]
+        "features": [
+          "3 agentes IA",
+          "1 usuário",
+          "5 GB storage",
+          "Telegram + WhatsApp + Web",
+          "BYOK",
+          "Agent Teams"
+        ]
       },
       "pro": {
         "name": "Pro",
-        "features": ["10 agentes IA", "5 usuários", "20 GB storage", "Todos os canais", "White-label", "Agent Teams + Delegação", "Container dedicado"]
+        "features": [
+          "10 agentes IA",
+          "5 usuários",
+          "20 GB storage",
+          "Todos os canais",
+          "White-label",
+          "Agent Teams + Delegação",
+          "Container dedicado"
+        ]
       },
       "enterprise": {
         "name": "Enterprise",
-        "features": ["Agentes ilimitados", "Usuários ilimitados", "Storage ilimitado", "KVM dedicada", "SLA 99.9%", "SSO/SAML"]
+        "features": [
+          "Agentes ilimitados",
+          "Usuários ilimitados",
+          "Storage ilimitado",
+          "KVM dedicada",
+          "SLA 99.9%",
+          "SSO/SAML"
+        ]
       }
     },
     "form": {
@@ -685,6 +727,20 @@
       "fr-FR": "Français",
       "it-IT": "Italiano",
       "de-DE": "Deutsch"
+    }
+  },
+  "legal": {
+    "terms": {
+      "title": "Termos de Uso",
+      "comingSoon": "Conteudo em breve",
+      "backToCheckout": "Voltar ao checkout",
+      "description": "Os termos de uso completos do ARGO serao publicados aqui em breve."
+    },
+    "privacy": {
+      "title": "Politica de Privacidade",
+      "comingSoon": "Conteudo em breve",
+      "backToCheckout": "Voltar ao checkout",
+      "description": "A politica de privacidade completa do ARGO sera publicada aqui em breve."
     }
   }
 }

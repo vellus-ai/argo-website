@@ -40,7 +40,7 @@ export default function WelcomePage() {
   const [showConfetti, setShowConfetti] = useState(false);
   const [pollCount, setPollCount] = useState(0);
 
-  const fetchStatus = useCallback(async () => {
+  const fetchStatus = useCallback(async (signal?: AbortSignal) => {
     if (!sessionId) {
       setError(t("noSessionId"));
       setLoading(false);
@@ -48,7 +48,7 @@ export default function WelcomePage() {
     }
 
     try {
-      const res = await fetch(`${API_URL}/api/v1/checkout/session-status/${sessionId}`);
+      const res = await fetch(`${API_URL}/api/v1/checkout/session-status/${sessionId}`, { signal });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const result = await res.json();
 
@@ -72,7 +72,8 @@ export default function WelcomePage() {
         setError(t("provisioningTimeout"));
         setLoading(false);
       }
-    } catch {
+    } catch (err) {
+      if (err instanceof DOMException && err.name === "AbortError") return;
       if (pollCount < 10) {
         setPollCount((c) => c + 1);
       } else {
@@ -84,8 +85,12 @@ export default function WelcomePage() {
 
   useEffect(() => {
     if (loading && !data) {
-      const timer = setTimeout(fetchStatus, pollCount === 0 ? 0 : 2000);
-      return () => clearTimeout(timer);
+      const controller = new AbortController();
+      const timer = setTimeout(() => fetchStatus(controller.signal), pollCount === 0 ? 0 : 2000);
+      return () => {
+        controller.abort();
+        clearTimeout(timer);
+      };
     }
   }, [fetchStatus, loading, data, pollCount]);
 
@@ -136,6 +141,10 @@ export default function WelcomePage() {
   }
 
   const firstName = data.name.split(" ")[0];
+  // The token is a one-time-use gateway token invalidated after first login.
+  // It is passed as a query param because the dashboard is on a different domain
+  // ({slug}-argo.consilium.tec.br) and cross-origin POST is not supported there yet.
+  // rel="noreferrer" on the link prevents Referer header leakage to third parties.
   const firstLoginUrl = `${data.dashboardUrl}/first-login?uid=${data.userId}&token=${data.token}`;
 
   return (
@@ -296,6 +305,7 @@ export default function WelcomePage() {
         <div className="text-center">
           <a
             href={firstLoginUrl}
+            rel="noreferrer"
             className="inline-flex items-center gap-2 rounded-xl bg-electric hover:bg-electric-hover text-white font-semibold py-3 px-8 transition-all shadow-lg shadow-electric/25"
           >
             <Rocket className="w-5 h-5" />
