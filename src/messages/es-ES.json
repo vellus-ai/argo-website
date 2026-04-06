@@ -184,7 +184,10 @@
       }
     },
     "footer": "Todos los planes incluyen: encriptacion AES-256, LGPD compliance, actualizaciones automaticas y 99.9% uptime. Cancela cuando quieras.",
-    "taxNote": "Los precios mostrados no incluyen impuestos o tasas aplicables (como IVA o impuesto sobre ventas), a menos que se indique explicitamente. Infraestructura basada en KVM (Kernel-based Virtual Machine) en Google Cloud."
+    "taxNote": "Los precios mostrados no incluyen impuestos o tasas aplicables (como IVA o impuesto sobre ventas), a menos que se indique explicitamente. Infraestructura basada en KVM (Kernel-based Virtual Machine) en Google Cloud.",
+    "popular": "Mas popular",
+    "start_cta": "Comenzar gratis",
+    "enterprise_cta": "Hablar con ventas"
   },
   "testimonials": {
     "title": "Quien lo usa, lo recomienda",
@@ -415,7 +418,12 @@
         "a": "Si. Encriptacion AES-256-GCM, TLS 1.3. LGPD y SOC 2 compliance."
       }
     },
-    "taxDisclaimer": "Los precios mostrados no incluyen impuestos o tasas aplicables."
+    "taxDisclaimer": "Los precios mostrados no incluyen impuestos o tasas aplicables.",
+    "goToCheckout": "Ir al checkout",
+    "backToCheckout": "Volver al checkout",
+    "paymentTitle": "Completar pago",
+    "paymentSubtitle": "Datos protegidos con encriptacion de extremo a extremo",
+    "trialBadge": "7 dias gratis — cancela en cualquier momento"
   },
   "welcome": {
     "noRecord": "Ningun registro encontrado.",
