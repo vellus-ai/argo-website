@@ -435,13 +435,14 @@
     "provisioningTimeout": "Provisioning is taking longer than expected. Check your email for credentials.",
     "fetchError": "Could not verify status. Check your email for credentials.",
     "welcomeTitle": "Welcome aboard, Captain {firstName}!",
-    "welcomeSubtitle": "Your crew is being prepared. Use the credentials below to access your command bridge.",
+    "welcomeSubtitle": "Your crew is being prepared. Check your email for access credentials.",
     "credentials": {
       "title": "Your access credentials",
       "dashboard": "Command Bridge (Dashboard)",
       "copy": "Copy",
       "emailSent": "We sent these credentials to",
-      "tokenWarning": "Keep the token in a safe place. It will be needed on first access."
+      "passwordInEmail": "Your login email and temporary password have been sent to this address.",
+      "changePasswordWarning": "A temporary password was sent to your email. Change it on your first login to keep your account secure."
     },
     "trialSummary": {
       "title": "Trial summary",
@@ -453,16 +454,16 @@
     "nextSteps": {
       "title": "Next steps",
       "step1": {
-        "title": "Access your command bridge",
-        "description": "Open the link above and enter your User ID + Token"
+        "title": "Check your email",
+        "description": "We sent your access credentials (email + temporary password) to your registered email"
       },
       "step2": {
-        "title": "Set up your permanent login",
-        "description": "Create email + password on first access (token expires in 24h)"
+        "title": "Log in to your command bridge",
+        "description": "Access the dashboard and sign in with your email and temporary password"
       },
       "step3": {
-        "title": "Build your crew",
-        "description": "The guided setup will help you create your first agent in 5 minutes"
+        "title": "Change your password",
+        "description": "On your first login, change the temporary password to keep your account secure"
       }
     },
     "accessDashboard": "Access my command bridge",

@@ -435,13 +435,14 @@
     "provisioningTimeout": "O provisionamento está demorando mais que o esperado. Verifique seu email para as credenciais.",
     "fetchError": "Não foi possível verificar o status. Verifique seu email para as credenciais.",
     "welcomeTitle": "Bem-vindo a bordo, Capitão {firstName}!",
-    "welcomeSubtitle": "Sua tripulação está sendo preparada. Use as credenciais abaixo para acessar sua ponte de comando.",
+    "welcomeSubtitle": "Sua tripulação está sendo preparada. Verifique seu email para as credenciais de acesso.",
     "credentials": {
       "title": "Suas credenciais de acesso",
       "dashboard": "Ponte de Comando (Dashboard)",
       "copy": "Copiar",
       "emailSent": "Enviamos essas credenciais para",
-      "tokenWarning": "Guarde o token em local seguro. Ele será necessário no primeiro acesso."
+      "passwordInEmail": "Seu email de login e senha temporária foram enviados para este endereço.",
+      "changePasswordWarning": "Sua senha temporária foi enviada por email. Altere-a no primeiro acesso para manter sua conta segura."
     },
     "trialSummary": {
       "title": "Resumo do trial",
@@ -453,16 +454,16 @@
     "nextSteps": {
       "title": "Próximos passos",
       "step1": {
-        "title": "Acesse sua ponte de comando",
-        "description": "Abra o link acima e insira seu User ID + Token"
+        "title": "Verifique seu email",
+        "description": "Enviamos suas credenciais de acesso (email + senha temporária) para o email cadastrado"
       },
       "step2": {
-        "title": "Configure seu login permanente",
-        "description": "Crie email + senha no primeiro acesso (o token expira em 24h)"
+        "title": "Faça login na ponte de comando",
+        "description": "Acesse o dashboard e entre com o email e a senha temporária"
       },
       "step3": {
-        "title": "Monte sua tripulação",
-        "description": "O setup guiado vai te ajudar a criar seu primeiro agente em 5 minutos"
+        "title": "Altere sua senha",
+        "description": "No primeiro acesso, altere a senha temporária para manter sua conta segura"
       }
     },
     "accessDashboard": "Acessar minha ponte de comando",

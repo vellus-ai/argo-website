@@ -427,13 +427,14 @@
     "provisioningTimeout": "El aprovisionamiento está tardando más de lo esperado. Revise su correo electrónico.",
     "fetchError": "No se pudo verificar el estado. Revise su correo electrónico.",
     "welcomeTitle": "Bienvenido a bordo, Capitan {firstName}!",
-    "welcomeSubtitle": "Tu tripulacion esta siendo preparada. Usa las credenciales abajo para acceder a tu puente de mando.",
+    "welcomeSubtitle": "Su tripulación se está preparando. Revise su email para las credenciales de acceso.",
     "credentials": {
       "title": "Tus credenciales de acceso",
       "dashboard": "Puente de Mando (Dashboard)",
       "copy": "Copiar",
       "emailSent": "Enviamos estas credenciales a",
-      "tokenWarning": "Guarda el token en un lugar seguro."
+      "passwordInEmail": "Su email de inicio de sesión y contraseña temporal han sido enviados a esta dirección.",
+      "changePasswordWarning": "Se envió una contraseña temporal a su email. Cámbiela en el primer acceso para mantener su cuenta segura."
     },
     "trialSummary": {
       "title": "Resumen del trial",
@@ -445,16 +446,16 @@
     "nextSteps": {
       "title": "Proximos pasos",
       "step1": {
-        "title": "Accede a tu puente de mando",
-        "description": "Abre el enlace e ingresa tu User ID + Token"
+        "title": "Revise su email",
+        "description": "Enviamos sus credenciales de acceso (email + contraseña temporal) al email registrado"
       },
       "step2": {
-        "title": "Configura tu login permanente",
-        "description": "Crea email + contrasena en el primer acceso"
+        "title": "Inicie sesión en su puente de mando",
+        "description": "Acceda al dashboard e inicie sesión con su email y contraseña temporal"
       },
       "step3": {
-        "title": "Monta tu tripulacion",
-        "description": "El setup guiado te ayudara a crear tu primer agente en 5 minutos"
+        "title": "Cambie su contraseña",
+        "description": "En el primer acceso, cambie la contraseña temporal para mantener su cuenta segura"
       }
     },
     "accessDashboard": "Acceder a mi puente de mando",
