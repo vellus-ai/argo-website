@@ -51,7 +51,7 @@ export default function WelcomePage() {
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const result = await res.json();
 
-      if (result.status === "complete" && result.slug) {
+      if (result.status === "complete" && result.slug && result.slug.length > 0) {
         setData({
           name: result.name || "",
           email: result.email || "",
