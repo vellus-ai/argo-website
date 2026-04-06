@@ -427,13 +427,14 @@
     "provisioningTimeout": "Il provisioning sta richiedendo più tempo del previsto. Controlla la tua e-mail.",
     "fetchError": "Impossibile verificare lo stato. Controlla la tua e-mail.",
     "welcomeTitle": "Benvenuto a bordo, Capitano {firstName}!",
-    "welcomeSubtitle": "Il tuo equipaggio si sta preparando. Usa le credenziali qui sotto per accedere al tuo ponte di comando.",
+    "welcomeSubtitle": "Il tuo equipaggio si sta preparando. Controlla la tua email per le credenziali di accesso.",
     "credentials": {
       "title": "Le tue credenziali di accesso",
       "dashboard": "Ponte di Comando (Dashboard)",
       "copy": "Copia",
       "emailSent": "Abbiamo inviato queste credenziali a",
-      "tokenWarning": "Conserva il token in un luogo sicuro."
+      "passwordInEmail": "La tua email di accesso e la password temporanea sono state inviate a questo indirizzo.",
+      "changePasswordWarning": "Una password temporanea è stata inviata alla tua email. Cambiala al primo accesso per mantenere il tuo account sicuro."
     },
     "trialSummary": {
       "title": "Riepilogo della prova",
@@ -445,16 +446,16 @@
     "nextSteps": {
       "title": "Prossimi passi",
       "step1": {
-        "title": "Accedi al tuo ponte di comando",
-        "description": "Apri il link e inserisci User ID + Token"
+        "title": "Controlla la tua email",
+        "description": "Abbiamo inviato le tue credenziali di accesso (email + password temporanea) all'email registrata"
       },
       "step2": {
-        "title": "Configura il tuo login permanente",
-        "description": "Crea email + password al primo accesso"
+        "title": "Accedi al tuo ponte di comando",
+        "description": "Accedi alla dashboard ed effettua il login con email e password temporanea"
       },
       "step3": {
-        "title": "Costruisci il tuo equipaggio",
-        "description": "Il setup guidato ti aiutera a creare il tuo primo agente in 5 minuti"
+        "title": "Cambia la tua password",
+        "description": "Al primo accesso, cambia la password temporanea per mantenere il tuo account sicuro"
       }
     },
     "accessDashboard": "Accedi al mio ponte di comando",

@@ -427,13 +427,14 @@
     "provisioningTimeout": "Le provisionnement prend plus de temps que prévu. Vérifiez vos e-mails.",
     "fetchError": "Impossible de vérifier le statut. Vérifiez vos e-mails.",
     "welcomeTitle": "Bienvenue a bord, Capitaine {firstName}!",
-    "welcomeSubtitle": "Votre equipage est en preparation. Utilisez les identifiants ci-dessous pour acceder a votre pont de commande.",
+    "welcomeSubtitle": "Votre équipage est en préparation. Vérifiez votre email pour les identifiants d'accès.",
     "credentials": {
       "title": "Vos identifiants d'acces",
       "dashboard": "Pont de Commande (Dashboard)",
       "copy": "Copier",
       "emailSent": "Nous avons envoye ces identifiants a",
-      "tokenWarning": "Gardez le token en lieu sur."
+      "passwordInEmail": "Votre email de connexion et votre mot de passe temporaire ont été envoyés à cette adresse.",
+      "changePasswordWarning": "Un mot de passe temporaire a été envoyé à votre email. Changez-le lors de votre première connexion pour sécuriser votre compte."
     },
     "trialSummary": {
       "title": "Resume de l'essai",
@@ -445,16 +446,16 @@
     "nextSteps": {
       "title": "Prochaines etapes",
       "step1": {
-        "title": "Accedez a votre pont de commande",
-        "description": "Ouvrez le lien et entrez votre User ID + Token"
+        "title": "Vérifiez votre email",
+        "description": "Nous avons envoyé vos identifiants d'accès (email + mot de passe temporaire) à votre email enregistré"
       },
       "step2": {
-        "title": "Configurez votre login permanent",
-        "description": "Creez email + mot de passe au premier acces"
+        "title": "Connectez-vous à votre passerelle de commandement",
+        "description": "Accédez au tableau de bord et connectez-vous avec votre email et mot de passe temporaire"
       },
       "step3": {
-        "title": "Montez votre equipage",
-        "description": "Le setup guide vous aidera a creer votre premier agent en 5 minutes"
+        "title": "Changez votre mot de passe",
+        "description": "Lors de votre première connexion, changez le mot de passe temporaire pour sécuriser votre compte"
       }
     },
     "accessDashboard": "Acceder a mon pont de commande",

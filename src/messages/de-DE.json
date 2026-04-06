@@ -427,13 +427,14 @@
     "provisioningTimeout": "Die Bereitstellung dauert länger als erwartet. Überprüfen Sie Ihre E-Mail.",
     "fetchError": "Status konnte nicht überprüft werden. Überprüfen Sie Ihre E-Mail.",
     "welcomeTitle": "Willkommen an Bord, Kapitan {firstName}!",
-    "welcomeSubtitle": "Ihre Crew wird vorbereitet. Verwenden Sie die Zugangsdaten unten, um auf Ihre Kommandozentrale zuzugreifen.",
+    "welcomeSubtitle": "Ihre Besatzung wird vorbereitet. Überprüfen Sie Ihre E-Mail für die Zugangsdaten.",
     "credentials": {
       "title": "Ihre Zugangsdaten",
       "dashboard": "Kommandozentrale (Dashboard)",
       "copy": "Kopieren",
       "emailSent": "Wir haben diese Zugangsdaten gesendet an",
-      "tokenWarning": "Bewahren Sie den Token sicher auf."
+      "passwordInEmail": "Ihre Login-E-Mail und Ihr temporäres Passwort wurden an diese Adresse gesendet.",
+      "changePasswordWarning": "Ein temporäres Passwort wurde an Ihre E-Mail gesendet. Ändern Sie es beim ersten Login, um Ihr Konto zu schützen."
     },
     "trialSummary": {
       "title": "Zusammenfassung der Testversion",
@@ -445,16 +446,16 @@
     "nextSteps": {
       "title": "Nachste Schritte",
       "step1": {
-        "title": "Greifen Sie auf Ihre Kommandozentrale zu",
-        "description": "Offnen Sie den Link und geben Sie User ID + Token ein"
+        "title": "Überprüfen Sie Ihre E-Mail",
+        "description": "Wir haben Ihre Zugangsdaten (E-Mail + temporäres Passwort) an Ihre registrierte E-Mail gesendet"
       },
       "step2": {
-        "title": "Richten Sie Ihren permanenten Login ein",
-        "description": "Erstellen Sie E-Mail + Passwort beim ersten Zugang"
+        "title": "Melden Sie sich an Ihrer Kommandobrücke an",
+        "description": "Greifen Sie auf das Dashboard zu und melden Sie sich mit Ihrer E-Mail und dem temporären Passwort an"
       },
       "step3": {
-        "title": "Bauen Sie Ihre Crew auf",
-        "description": "Das gefuhrte Setup hilft Ihnen, Ihren ersten Agenten in 5 Minuten zu erstellen"
+        "title": "Ändern Sie Ihr Passwort",
+        "description": "Ändern Sie beim ersten Login das temporäre Passwort, um Ihr Konto zu schützen"
       }
     },
     "accessDashboard": "Meine Kommandozentrale offnen",

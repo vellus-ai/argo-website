@@ -13,6 +13,7 @@ import {
   Sparkles,
   PartyPopper,
   Loader2,
+  ShieldCheck,
 } from "lucide-react";
 
 interface ProvisioningData {
@@ -21,8 +22,6 @@ interface ProvisioningData {
   company: string;
   plan: string;
   slug: string;
-  userId: string;
-  token: string;
   dashboardUrl: string;
 }
 
@@ -52,15 +51,13 @@ export default function WelcomePage() {
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const result = await res.json();
 
-      if (result.user_id && result.gateway_token) {
+      if (result.status === "complete" && result.slug && result.slug.length > 0) {
         setData({
           name: result.name || "",
           email: result.email || "",
           company: result.company || "",
           plan: result.plan || "starter",
           slug: result.slug || "",
-          userId: result.user_id,
-          token: result.gateway_token,
           dashboardUrl: result.dashboard_url || `https://${result.slug}-argo.consilium.tec.br`,
         });
         setShowConfetti(true);
@@ -141,11 +138,6 @@ export default function WelcomePage() {
   }
 
   const firstName = data.name.split(" ")[0];
-  // The token is a one-time-use gateway token invalidated after first login.
-  // It is passed as a query param because the dashboard is on a different domain
-  // ({slug}-argo.consilium.tec.br) and cross-origin POST is not supported there yet.
-  // rel="noreferrer" on the link prevents Referer header leakage to third parties.
-  const firstLoginUrl = `${data.dashboardUrl}/first-login?uid=${data.userId}&token=${data.token}`;
 
   return (
     <div className="min-h-screen bg-midnight">
@@ -196,7 +188,7 @@ export default function WelcomePage() {
           </p>
         </div>
 
-        {/* Credentials */}
+        {/* Credentials — email-based login */}
         <div className="rounded-xl border border-border bg-navy p-6 mb-8">
           <h2 className="text-sm font-semibold text-text-tertiary uppercase tracking-wider mb-6">
             {t("credentials.title")}
@@ -218,34 +210,6 @@ export default function WelcomePage() {
                 </button>
               </div>
             </div>
-            <div>
-              <label className="block text-xs text-text-tertiary mb-1">User ID</label>
-              <div className="flex items-center gap-2">
-                <code className="flex-1 bg-midnight rounded-lg px-4 py-2.5 text-text-primary font-mono text-sm border border-border">
-                  {data.userId}
-                </code>
-                <button
-                  onClick={() => copyToClipboard(data.userId, "userId")}
-                  className="p-2.5 rounded-lg border border-border hover:border-electric transition"
-                >
-                  {copiedField === "userId" ? <Check className="w-4 h-4 text-emerald" /> : <Copy className="w-4 h-4 text-text-tertiary" />}
-                </button>
-              </div>
-            </div>
-            <div>
-              <label className="block text-xs text-text-tertiary mb-1">Gateway Token</label>
-              <div className="flex items-center gap-2">
-                <code className="flex-1 bg-midnight rounded-lg px-4 py-2.5 text-amber font-mono text-sm border border-border break-all">
-                  {data.token}
-                </code>
-                <button
-                  onClick={() => copyToClipboard(data.token, "token")}
-                  className="p-2.5 rounded-lg border border-border hover:border-electric transition"
-                >
-                  {copiedField === "token" ? <Check className="w-4 h-4 text-emerald" /> : <Copy className="w-4 h-4 text-text-tertiary" />}
-                </button>
-              </div>
-            </div>
           </div>
           <div className="mt-6 flex items-start gap-3 bg-midnight rounded-lg p-4 border border-border">
             <Mail className="w-5 h-5 text-electric mt-0.5 shrink-0" />
@@ -253,8 +217,12 @@ export default function WelcomePage() {
               <p className="text-sm text-text-primary">
                 {t("credentials.emailSent")} <span className="text-electric font-medium">{data.email}</span>
               </p>
-              <p className="text-xs text-text-tertiary mt-1">{t("credentials.tokenWarning")}</p>
+              <p className="text-xs text-text-tertiary mt-1">{t("credentials.passwordInEmail")}</p>
             </div>
+          </div>
+          <div className="mt-3 flex items-start gap-3 bg-amber/5 rounded-lg p-4 border border-amber/20">
+            <ShieldCheck className="w-5 h-5 text-amber mt-0.5 shrink-0" />
+            <p className="text-xs text-amber/80">{t("credentials.changePasswordWarning")}</p>
           </div>
         </div>
 
@@ -304,7 +272,7 @@ export default function WelcomePage() {
         {/* CTA */}
         <div className="text-center">
           <a
-            href={firstLoginUrl}
+            href={data.dashboardUrl}
             rel="noreferrer"
             className="inline-flex items-center gap-2 rounded-xl bg-electric hover:bg-electric-hover text-white font-semibold py-3 px-8 transition-all shadow-lg shadow-electric/25"
           >
