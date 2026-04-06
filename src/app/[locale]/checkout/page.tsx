@@ -240,7 +240,7 @@ function CheckoutContent() {
 
         <div className="grid lg:grid-cols-5 gap-6">
           {/* Left column */}
-          <div className="lg:col-span-3 space-y-4">
+          <div className="lg:col-span-3 space-y-4 rounded-xl border border-border bg-navy p-5">
             {/* 1. Billing period */}
             {!isEnterprise && (
               <div>
@@ -498,7 +498,7 @@ function CheckoutContent() {
         </div>
 
         {/* FAQ Section */}
-        <div className="mt-20 max-w-3xl mx-auto">
+        <div className="mt-20 max-w-5xl mx-auto">
           <h2 className="text-2xl font-bold text-text-primary text-center mb-8">
             {t("faqTitle")}
           </h2>
