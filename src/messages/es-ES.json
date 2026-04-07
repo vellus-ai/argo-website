@@ -426,9 +426,9 @@
     "trialBadge": "7 dias gratis — cancela en cualquier momento"
   },
   "welcome": {
-    "noRecord": "Ningun registro encontrado.",
-    "noSessionId": "Sesión no encontrada. Por favor, rehaga el checkout.",
-    "goToCheckout": "Ir al checkout",
+    "noRecord": "Ningún navío encontrado en este puerto.",
+    "noSessionId": "Carta náutica no localizada. Trace una nueva ruta por el checkout.",
+    "goToCheckout": "Volver al puerto de embarque",
     "trialActivated": "Trial activado con exito!",
     "preparingEnvironment": "Izando las velas...",
     "provisioningStatus": "Tu tripulación está embarcando. En instantes, el Puente de Mando estará listo.",

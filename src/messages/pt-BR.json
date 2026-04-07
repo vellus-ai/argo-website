@@ -426,9 +426,9 @@
     "taxDisclaimer": "Os preços exibidos não incluem impostos ou taxas aplicáveis (como IVA ou imposto sobre vendas), a menos que explicitamente indicado. Infraestrutura baseada em KVM (Kernel-based Virtual Machine) no Google Cloud Platform."
   },
   "welcome": {
-    "noRecord": "Nenhum registro encontrado.",
-    "noSessionId": "Sessão não encontrada. Por favor, refaça o checkout.",
-    "goToCheckout": "Ir para o checkout",
+    "noRecord": "Nenhum navio encontrado neste porto.",
+    "noSessionId": "Carta náutica não localizada. Trace uma nova rota pelo checkout.",
+    "goToCheckout": "Voltar ao porto de embarque",
     "trialActivated": "Trial ativado com sucesso!",
     "preparingEnvironment": "Içando as velas...",
     "provisioningStatus": "Sua tripulação está embarcando. Em instantes, a Ponte de Comando estará pronta.",

@@ -426,9 +426,9 @@
     "trialBadge": "7 Tage kostenlos — jederzeit kundbar"
   },
   "welcome": {
-    "noRecord": "Kein Eintrag gefunden.",
-    "noSessionId": "Sitzung nicht gefunden. Bitte wiederholen Sie den Checkout.",
-    "goToCheckout": "Zum Checkout",
+    "noRecord": "Kein Schiff in diesem Hafen gefunden.",
+    "noSessionId": "Seekarte nicht gefunden. Planen Sie eine neue Route über den Checkout.",
+    "goToCheckout": "Zurück zum Einschiffungshafen",
     "trialActivated": "Testversion erfolgreich aktiviert!",
     "preparingEnvironment": "Die Segel werden gehisst...",
     "provisioningStatus": "Ihre Crew geht an Bord. Die Kommandobrücke wird in wenigen Augenblicken bereit sein.",

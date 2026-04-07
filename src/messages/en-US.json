@@ -426,9 +426,9 @@
     "taxDisclaimer": "Prices shown do not include applicable taxes or fees (such as VAT or sales tax), unless explicitly stated. Infrastructure based on KVM (Kernel-based Virtual Machine) on Google Cloud Platform."
   },
   "welcome": {
-    "noRecord": "No record found.",
-    "noSessionId": "Session not found. Please redo the checkout.",
-    "goToCheckout": "Go to checkout",
+    "noRecord": "No ship found at this port.",
+    "noSessionId": "Nautical chart not found. Plot a new course through checkout.",
+    "goToCheckout": "Return to the boarding port",
     "trialActivated": "Trial activated successfully!",
     "preparingEnvironment": "Hoisting the sails...",
     "provisioningStatus": "Your crew is boarding. The Bridge will be ready in a moment.",

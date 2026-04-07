@@ -426,9 +426,9 @@
     "trialBadge": "7 giorni gratis — cancella in qualsiasi momento"
   },
   "welcome": {
-    "noRecord": "Nessun record trovato.",
-    "noSessionId": "Sessione non trovata. Per favore, rifai il checkout.",
-    "goToCheckout": "Vai al checkout",
+    "noRecord": "Nessuna nave trovata in questo porto.",
+    "noSessionId": "Carta nautica non trovata. Traccia una nuova rotta dal checkout.",
+    "goToCheckout": "Torna al porto d'imbarco",
     "trialActivated": "Prova attivata con successo!",
     "preparingEnvironment": "Issando le vele...",
     "provisioningStatus": "Il tuo equipaggio sta imbarcando. La Plancia di Comando sarà pronta tra un istante.",
