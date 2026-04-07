@@ -161,7 +161,7 @@ function CheckoutContent() {
     return (
       <div className="min-h-screen bg-midnight">
         <header className="py-6 px-4">
-          <div className="max-w-3xl mx-auto flex items-center justify-between">
+          <div className="max-w-5xl mx-auto flex items-center justify-between">
             <a href="/" className="flex items-center gap-2">
               <Anchor className="w-6 h-6 text-electric" />
               <span className="text-xl font-bold text-text-primary">ARGO</span>
@@ -175,7 +175,7 @@ function CheckoutContent() {
           </div>
         </header>
 
-        <main className="max-w-3xl mx-auto px-4 py-8">
+        <main className="max-w-5xl mx-auto px-4 py-8">
           <div className="text-center mb-8">
             <h1 className="text-2xl font-bold text-text-primary mb-2">
               <CreditCard className="inline w-6 h-6 mr-2 text-electric" />

@@ -426,14 +426,14 @@
     "trialBadge": "7 jours gratuits — annulez a tout moment"
   },
   "welcome": {
-    "noRecord": "Aucun enregistrement trouve.",
-    "noSessionId": "Session introuvable. Veuillez refaire le checkout.",
-    "goToCheckout": "Aller au checkout",
+    "noRecord": "Aucun navire trouvé dans ce port.",
+    "noSessionId": "Carte nautique introuvable. Tracez un nouveau cap via le checkout.",
+    "goToCheckout": "Retour au port d'embarquement",
     "trialActivated": "Essai active avec succes!",
-    "preparingEnvironment": "Préparation de votre Passerelle de Commande...",
-    "provisioningStatus": "Nous configurons votre environnement. Cela prend quelques secondes.",
-    "provisioningTimeout": "Le provisionnement prend plus de temps que prévu. Vérifiez vos e-mails.",
-    "fetchError": "Impossible de vérifier le statut. Vérifiez vos e-mails.",
+    "preparingEnvironment": "On hisse les voiles...",
+    "provisioningStatus": "Votre équipage embarque. La Passerelle de Commandement sera prête dans un instant.",
+    "provisioningTimeout": "La traversée prend plus de temps que prévu. Vérifiez votre email — les coordonnées d'accès ont déjà été envoyées.",
+    "fetchError": "Nous avons perdu le signal du phare. Vérifiez votre email — les coordonnées d'accès ont déjà été envoyées.",
     "welcomeTitle": "Bienvenue a bord, Capitaine {firstName}!",
     "welcomeSubtitle": "Votre équipage est en préparation. Vérifiez votre email pour les identifiants d'accès.",
     "credentials": {
