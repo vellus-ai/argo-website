@@ -30,53 +30,77 @@ interface TemplateContent {
 
 type TemplateData = Record<LangCode, TemplateContent>;
 
-const PLACEHOLDER_VARS = ["{{name}}", "{{company}}", "{{dashboardUrl}}", "{{userId}}", "{{gatewayToken}}", "{{trialDays}}", "{{plan}}"];
+const PLACEHOLDER_VARS = ["{{name}}", "{{company}}", "{{dashboardUrl}}", "{{email}}", "{{password}}", "{{trialDays}}", "{{plan}}"];
 
 const SAMPLE_DATA: Record<string, string> = {
   "{{name}}": "Maria Silva",
   "{{company}}": "Acme Corp",
   "{{dashboardUrl}}": "https://acme-argo.consilium.tec.br",
-  "{{userId}}": "usr_abc123",
-  "{{gatewayToken}}": "gw_tok_xyz789",
+  "{{email}}": "maria.silva@acme.com",
+  "{{password}}": "Tmp!Pass99_Abc",
   "{{trialDays}}": "7",
   "{{plan}}": "Pro",
 };
 
 const DEFAULT_PT_BR: TemplateContent = {
-  subject: "Bem-vindo ao ARGO, {{name}}! Sua conta {{company}} est\u00e1 pronta",
+  subject: "Bem-vindo a bordo, {{name}}! Sua embarca\u00e7\u00e3o {{company}} est\u00e1 pronta para zarpar",
   body: `<!DOCTYPE html>
 <html>
-<body style="font-family: Arial, sans-serif; background-color: #0a0f1c; color: #e2e8f0; padding: 40px 20px;">
-  <div style="max-width: 600px; margin: 0 auto; background-color: #111827; border-radius: 12px; border: 1px solid #1e293b; overflow: hidden;">
+<head><meta charset="utf-8"></head>
+<body style="font-family: Arial, sans-serif; background-color: #0a0f1c; color: #e2e8f0; padding: 40px 20px; margin: 0;">
+  <div style="max-width: 600px; margin: 0 auto; background-color: #111827; border: 1px solid #1e293b; border-radius: 12px; overflow: hidden;">
     <div style="background: linear-gradient(135deg, #2563eb, #0ea5e9); padding: 32px; text-align: center;">
-      <h1 style="color: white; margin: 0; font-size: 28px;">\u2693 ARGO</h1>
-      <p style="color: rgba(255,255,255,0.85); margin-top: 8px;">Plataforma de Agentes IA</p>
+      <h1 style="color: white; margin: 0; font-size: 28px; letter-spacing: 1px;">&#9875; ARGO</h1>
+      <p style="color: rgba(255,255,255,0.85); margin-top: 8px; font-size: 14px;">Sua tripula\u00e7\u00e3o de IA</p>
     </div>
     <div style="padding: 32px;">
-      <h2 style="color: #f1f5f9; margin-top: 0;">Ol\u00e1, {{name}}! \ud83d\ude80</h2>
-      <p>Sua conta da empresa <strong style="color: #60a5fa;">{{company}}</strong> foi provisionada com sucesso no ARGO.</p>
+      <h2 style="color: #f1f5f9; margin-top: 0;">Capit\u00e3o {{name}}, bem-vindo a bordo!</h2>
+      <p style="color: #cbd5e1; line-height: 1.6;">A embarca\u00e7\u00e3o <strong style="color: #60a5fa;">{{company}}</strong> foi comissionada com sucesso. Sua tripula\u00e7\u00e3o de agentes IA aguarda ordens para zarpar.</p>
 
-      <div style="background-color: #0a0f1c; border-radius: 8px; padding: 20px; margin: 24px 0; border: 1px solid #1e293b;">
-        <h3 style="color: #60a5fa; margin-top: 0;">Dados de Acesso</h3>
-        <p><strong>Dashboard:</strong> <a href="{{dashboardUrl}}" style="color: #0ea5e9;">{{dashboardUrl}}</a></p>
-        <p><strong>Seu usu\u00e1rio:</strong> {{userId}}</p>
-        <p><strong>Token do Gateway:</strong> <code style="background: #1e293b; padding: 2px 8px; border-radius: 4px; color: #fbbf24;">{{gatewayToken}}</code></p>
-        <p><strong>Plano:</strong> {{plan}} | <strong>Trial:</strong> {{trialDays}} dias</p>
+      <div style="background-color: #0a0f1c; border: 1px solid #1e293b; border-radius: 8px; padding: 20px; margin: 24px 0;">
+        <h3 style="color: #60a5fa; margin-top: 0; font-size: 16px;">&#x1F5DD; Credenciais de Acesso</h3>
+        <table style="width: 100%; border-collapse: collapse;">
+          <tr>
+            <td style="padding: 8px 0; color: #94a3b8; font-size: 14px; width: 140px;"><strong>Dashboard:</strong></td>
+            <td style="padding: 8px 0;"><a href="{{dashboardUrl}}" style="color: #38bdf8; text-decoration: none; font-size: 14px;">{{dashboardUrl}}</a></td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; color: #94a3b8; font-size: 14px;"><strong>Email:</strong></td>
+            <td style="padding: 8px 0;"><code style="background: #1e293b; padding: 2px 8px; border-radius: 4px; color: #60a5fa; font-size: 13px;">{{email}}</code></td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; color: #94a3b8; font-size: 14px;"><strong>Senha tempor\u00e1ria:</strong></td>
+            <td style="padding: 8px 0;"><code style="background: #1e293b; padding: 2px 8px; border-radius: 4px; color: #fbbf24; font-size: 13px;">{{password}}</code></td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; color: #94a3b8; font-size: 14px;"><strong>Plano:</strong></td>
+            <td style="padding: 8px 0; color: #cbd5e1; font-size: 14px;">{{plan}} <span style="color: #64748b;">|</span> Trial de {{trialDays}} dias</td>
+          </tr>
+        </table>
       </div>
 
-      <h3 style="color: #f1f5f9;">Pr\u00f3ximos passos:</h3>
-      <ol style="line-height: 1.8;">
-        <li>Acesse seu <a href="{{dashboardUrl}}" style="color: #0ea5e9;">dashboard</a></li>
-        <li>Configure seu primeiro agente IA</li>
-        <li>Conecte seu LLM preferido (OpenAI, Anthropic, etc.)</li>
-        <li>Crie seus fluxos de automa\u00e7\u00e3o</li>
-      </ol>
+      <div style="background-color: rgba(127, 29, 29, 0.15); border: 1px solid #991b1b; border-radius: 8px; padding: 12px 16px; margin: 16px 0;">
+        <p style="color: #fca5a5; margin: 0; font-size: 13px; line-height: 1.5;">&#9888;&#65039; <strong>Ordem de seguran\u00e7a:</strong> Esta \u00e9 uma senha tempor\u00e1ria. Por seguran\u00e7a, voc\u00ea ser\u00e1 solicitado a alter\u00e1-la no primeiro acesso.</p>
+      </div>
 
-      <p style="margin-top: 24px;">D\u00favidas? Responda este email ou acesse nossa documenta\u00e7\u00e3o.</p>
-      <p style="color: #64748b; font-size: 14px; margin-top: 32px; border-top: 1px solid #1e293b; padding-top: 16px;">
-        Equipe ARGO \u2014 Vellus Tecnologia<br/>
-        <a href="https://argo.vellus.tech" style="color: #0ea5e9;">argo.vellus.tech</a>
-      </p>
+      <div style="text-align: center; margin: 32px 0;">
+        <a href="{{dashboardUrl}}" style="background: linear-gradient(135deg, #2563eb, #0ea5e9); color: white; padding: 14px 40px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px; display: inline-block;">Embarcar no ARGO &#x2192;</a>
+      </div>
+
+      <div style="background-color: #0f172a; border: 1px solid #1e293b; border-radius: 8px; padding: 16px 20px; margin-top: 24px;">
+        <h4 style="color: #e2e8f0; margin-top: 0; font-size: 14px;">&#x1F9ED; Carta de navega\u00e7\u00e3o:</h4>
+        <ol style="color: #94a3b8; font-size: 13px; padding-left: 20px; margin: 0; line-height: 1.8;">
+          <li>Acesse o dashboard com seu email e senha tempor\u00e1ria</li>
+          <li>Defina sua nova senha no primeiro acesso</li>
+          <li>Configure seu provider de IA (traga sua chave ou use ChatGPT OAuth)</li>
+          <li>Monte sua tripula\u00e7\u00e3o \u2014 crie seu primeiro agente e conecte um canal</li>
+        </ol>
+      </div>
+
+      <p style="color: #64748b; font-size: 13px; margin-top: 24px; line-height: 1.5;">Precisa de ajuda na travessia? Responda este email \u2014 nossa equipe est\u00e1 a postos.</p>
+    </div>
+    <div style="padding: 20px 32px; border-top: 1px solid #1e293b; text-align: center;">
+      <p style="color: #475569; font-size: 11px; margin: 0; line-height: 1.6;">ARGO by Vellus \u2014 Sua tripula\u00e7\u00e3o de IA<br><a href="https://argo.consilium.tec.br" style="color: #475569; text-decoration: none;">argo.consilium.tec.br</a></p>
     </div>
   </div>
 </body>
@@ -100,8 +124,8 @@ const MOCK_TRANSLATIONS: Partial<Record<LangCode, TemplateContent>> = {
       <div style="background-color: #0a0f1c; border-radius: 8px; padding: 20px; margin: 24px 0; border: 1px solid #1e293b;">
         <h3 style="color: #60a5fa; margin-top: 0;">Access Details</h3>
         <p><strong>Dashboard:</strong> <a href="{{dashboardUrl}}" style="color: #0ea5e9;">{{dashboardUrl}}</a></p>
-        <p><strong>Your user:</strong> {{userId}}</p>
-        <p><strong>Gateway Token:</strong> <code style="background: #1e293b; padding: 2px 8px; border-radius: 4px; color: #fbbf24;">{{gatewayToken}}</code></p>
+        <p><strong>Email:</strong> <code style="background: #1e293b; padding: 2px 8px; border-radius: 4px; color: #60a5fa;">{{email}}</code></p>
+        <p><strong>Temporary password:</strong> <code style="background: #1e293b; padding: 2px 8px; border-radius: 4px; color: #fbbf24;">{{password}}</code></p>
         <p><strong>Plan:</strong> {{plan}} | <strong>Trial:</strong> {{trialDays}} days</p>
       </div>
       <h3 style="color: #f1f5f9;">Next steps:</h3>
@@ -137,8 +161,8 @@ const MOCK_TRANSLATIONS: Partial<Record<LangCode, TemplateContent>> = {
       <div style="background-color: #0a0f1c; border-radius: 8px; padding: 20px; margin: 24px 0; border: 1px solid #1e293b;">
         <h3 style="color: #60a5fa; margin-top: 0;">Datos de Acceso</h3>
         <p><strong>Dashboard:</strong> <a href="{{dashboardUrl}}" style="color: #0ea5e9;">{{dashboardUrl}}</a></p>
-        <p><strong>Tu usuario:</strong> {{userId}}</p>
-        <p><strong>Token del Gateway:</strong> <code style="background: #1e293b; padding: 2px 8px; border-radius: 4px; color: #fbbf24;">{{gatewayToken}}</code></p>
+        <p><strong>Email:</strong> <code style="background: #1e293b; padding: 2px 8px; border-radius: 4px; color: #60a5fa;">{{email}}</code></p>
+        <p><strong>Contrase\u00f1a temporal:</strong> <code style="background: #1e293b; padding: 2px 8px; border-radius: 4px; color: #fbbf24;">{{password}}</code></p>
         <p><strong>Plan:</strong> {{plan}} | <strong>Prueba:</strong> {{trialDays}} d\u00edas</p>
       </div>
       <h3 style="color: #f1f5f9;">Pr\u00f3ximos pasos:</h3>
@@ -174,8 +198,8 @@ const MOCK_TRANSLATIONS: Partial<Record<LangCode, TemplateContent>> = {
       <div style="background-color: #0a0f1c; border-radius: 8px; padding: 20px; margin: 24px 0; border: 1px solid #1e293b;">
         <h3 style="color: #60a5fa; margin-top: 0;">Donn\u00e9es d'Acc\u00e8s</h3>
         <p><strong>Dashboard :</strong> <a href="{{dashboardUrl}}" style="color: #0ea5e9;">{{dashboardUrl}}</a></p>
-        <p><strong>Votre identifiant :</strong> {{userId}}</p>
-        <p><strong>Token Gateway :</strong> <code style="background: #1e293b; padding: 2px 8px; border-radius: 4px; color: #fbbf24;">{{gatewayToken}}</code></p>
+        <p><strong>Email :</strong> <code style="background: #1e293b; padding: 2px 8px; border-radius: 4px; color: #60a5fa;">{{email}}</code></p>
+        <p><strong>Mot de passe temporaire :</strong> <code style="background: #1e293b; padding: 2px 8px; border-radius: 4px; color: #fbbf24;">{{password}}</code></p>
         <p><strong>Plan :</strong> {{plan}} | <strong>Essai :</strong> {{trialDays}} jours</p>
       </div>
       <h3 style="color: #f1f5f9;">Prochaines \u00e9tapes :</h3>
@@ -211,8 +235,8 @@ const MOCK_TRANSLATIONS: Partial<Record<LangCode, TemplateContent>> = {
       <div style="background-color: #0a0f1c; border-radius: 8px; padding: 20px; margin: 24px 0; border: 1px solid #1e293b;">
         <h3 style="color: #60a5fa; margin-top: 0;">Dati di Accesso</h3>
         <p><strong>Dashboard:</strong> <a href="{{dashboardUrl}}" style="color: #0ea5e9;">{{dashboardUrl}}</a></p>
-        <p><strong>Il tuo utente:</strong> {{userId}}</p>
-        <p><strong>Token Gateway:</strong> <code style="background: #1e293b; padding: 2px 8px; border-radius: 4px; color: #fbbf24;">{{gatewayToken}}</code></p>
+        <p><strong>Email:</strong> <code style="background: #1e293b; padding: 2px 8px; border-radius: 4px; color: #60a5fa;">{{email}}</code></p>
+        <p><strong>Password temporanea:</strong> <code style="background: #1e293b; padding: 2px 8px; border-radius: 4px; color: #fbbf24;">{{password}}</code></p>
         <p><strong>Piano:</strong> {{plan}} | <strong>Prova:</strong> {{trialDays}} giorni</p>
       </div>
       <h3 style="color: #f1f5f9;">Prossimi passi:</h3>
@@ -248,8 +272,8 @@ const MOCK_TRANSLATIONS: Partial<Record<LangCode, TemplateContent>> = {
       <div style="background-color: #0a0f1c; border-radius: 8px; padding: 20px; margin: 24px 0; border: 1px solid #1e293b;">
         <h3 style="color: #60a5fa; margin-top: 0;">Zugangsdaten</h3>
         <p><strong>Dashboard:</strong> <a href="{{dashboardUrl}}" style="color: #0ea5e9;">{{dashboardUrl}}</a></p>
-        <p><strong>Ihr Benutzer:</strong> {{userId}}</p>
-        <p><strong>Gateway-Token:</strong> <code style="background: #1e293b; padding: 2px 8px; border-radius: 4px; color: #fbbf24;">{{gatewayToken}}</code></p>
+        <p><strong>E-Mail:</strong> <code style="background: #1e293b; padding: 2px 8px; border-radius: 4px; color: #60a5fa;">{{email}}</code></p>
+        <p><strong>Tempor\u00e4res Passwort:</strong> <code style="background: #1e293b; padding: 2px 8px; border-radius: 4px; color: #fbbf24;">{{password}}</code></p>
         <p><strong>Plan:</strong> {{plan}} | <strong>Testphase:</strong> {{trialDays}} Tage</p>
       </div>
       <h3 style="color: #f1f5f9;">N\u00e4chste Schritte:</h3>
@@ -326,10 +350,6 @@ interface Stats {
 }
 
 function getInitialTemplateData(): TemplateData {
-  const saved = typeof window !== "undefined" ? localStorage.getItem("argo_email_templates") : null;
-  if (saved) {
-    try { return JSON.parse(saved); } catch { /* ignore */ }
-  }
   const empty: TemplateContent = { subject: "", body: "" };
   return {
     "pt-BR": { ...DEFAULT_PT_BR },
@@ -404,6 +424,23 @@ export default function AdminPortal() {
       setStats(statsData);
       setTenants(tenantsData.tenants || []);
       setAuthenticated(true);
+
+      // Load email templates from API (non-blocking)
+      try {
+        const tplRes = await fetch(`${API_URL}/admin/v1/email-templates?type=welcome`, { headers });
+        if (tplRes.ok) {
+          const tplData = await tplRes.json();
+          if (tplData.templates?.length > 0) {
+            const loaded: Partial<TemplateData> = {};
+            for (const tpl of tplData.templates) {
+              if (SUPPORTED_LANGUAGES.some((l) => l.code === tpl.lang)) {
+                loaded[tpl.lang as LangCode] = { subject: tpl.subject, body: tpl.body };
+              }
+            }
+            setTemplateData((prev) => ({ ...prev, ...loaded }));
+          }
+        }
+      } catch { /* silently fall back to defaults */ }
     } catch (err) {
       setError(err instanceof Error ? err.message : t("errors.unknown"));
       setAuthenticated(false);
@@ -608,10 +645,25 @@ export default function AdminPortal() {
     }, 2000);
   };
 
-  const handleSaveTemplate = () => {
-    localStorage.setItem("argo_email_templates", JSON.stringify(templateData));
-    setSaveToast(true);
-    setTimeout(() => setSaveToast(false), 3000);
+  const handleSaveTemplate = async () => {
+    const token = sessionStorage.getItem("argo_admin_key");
+    if (!token) return;
+    try {
+      const res = await fetch(`${API_URL}/admin/v1/email-templates/${activeLang}`, {
+        method: "PUT",
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          template_type: "welcome",
+          subject: templateData[activeLang].subject,
+          body: templateData[activeLang].body,
+        }),
+      });
+      if (!res.ok) throw new Error("Failed to save template");
+      setSaveToast(true);
+      setTimeout(() => setSaveToast(false), 3000);
+    } catch (err) {
+      console.error("Failed to save template:", err);
+    }
   };
 
   const previewHtml = useMemo(() => {
