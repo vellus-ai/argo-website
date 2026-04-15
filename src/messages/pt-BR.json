@@ -365,7 +365,11 @@
       "email": "Email profissional",
       "company": "Empresa",
       "accountName": "Nome da conta",
-      "optional": "opcional"
+      "optional": "opcional",
+      "gender": "Como devemos trat\u00e1-lo(a)?",
+      "genderMale": "Capit\u00e3o (ele)",
+      "genderFemale": "Capit\u00e3 (ela)",
+      "genderOther": "Capit\u00e3o/\u00e3 (neutro)"
     },
     "summary": {
       "plan": "Plano",

@@ -53,7 +53,7 @@ function CheckoutContent() {
 
   const [selectedPlan, setSelectedPlan] = useState("");
   const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>("monthly");
-  const [form, setForm] = useState({ name: "", email: "", company: "" });
+  const [form, setForm] = useState({ name: "", email: "", company: "", gender: "" });
   const [lgpdConsent, setLgpdConsent] = useState(false);
   const [plans, setPlans] = useState<APIPlan[]>([]);
   const [submitting, setSubmitting] = useState(false);
@@ -122,6 +122,7 @@ function CheckoutContent() {
           name: form.name,
           email: form.email,
           company: form.company,
+          gender: form.gender,
           plan: selectedPlan,
           period: billingPeriod,
         }),
@@ -394,6 +395,23 @@ function CheckoutContent() {
                     placeholder="Vellus Tecnologia"
                     className="w-full rounded-lg border border-border bg-midnight px-4 py-2.5 text-text-primary placeholder:text-text-tertiary focus:border-electric focus:outline-none focus:ring-1 focus:ring-electric transition"
                   />
+                </div>
+
+                {/* Gender / Treatment selector */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">{t("form.gender")}</label>
+                  <div className="flex gap-3">
+                    {[
+                      { value: "male", label: t("form.genderMale") },
+                      { value: "female", label: t("form.genderFemale") },
+                      { value: "other", label: t("form.genderOther") },
+                    ].map((opt) => (
+                      <label key={opt.value} className="flex items-center gap-2 cursor-pointer rounded-lg border px-3 py-2 text-sm hover:bg-accent transition-colors [&:has(input:checked)]:border-primary [&:has(input:checked)]:bg-primary/5">
+                        <input type="radio" name="gender" value={opt.value} checked={form.gender === opt.value} onChange={(e) => setForm({ ...form, gender: e.target.value })} className="accent-primary" />
+                        {opt.label}
+                      </label>
+                    ))}
+                  </div>
                 </div>
 
                 {/* Summary */}
