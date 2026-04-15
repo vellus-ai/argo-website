@@ -366,7 +366,7 @@ export default function AdminPortal() {
   const [apiKey, setApiKey] = useState("");
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
-  const [loginMode, setLoginMode] = useState<"credentials" | "token">("credentials");
+
   const [authenticated, setAuthenticated] = useState(false);
   const [stats, setStats] = useState<Stats | null>(null);
   const [tenants, setTenants] = useState<Tenant[]>([]);
@@ -550,14 +550,9 @@ export default function AdminPortal() {
     }
   };
 
-  const handleTokenLogin = (e: React.FormEvent) => {
+  const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (loginMode === "token" && apiKey) {
-      sessionStorage.setItem("argo_admin_key", apiKey);
-      fetchData(apiKey);
-    } else if (loginMode === "credentials") {
-      handleLogin();
-    }
+    handleLogin();
   };
 
   useEffect(() => {
@@ -692,59 +687,29 @@ export default function AdminPortal() {
             <h1 className="text-2xl font-bold text-text-primary">ARGO Admin</h1>
             <p className="text-text-tertiary text-sm mt-1">{t("login.subtitle")}</p>
           </div>
-          <form onSubmit={handleTokenLogin} className="bg-navy rounded-xl border border-border p-6 space-y-4">
+          <form onSubmit={handleFormSubmit} className="bg-navy rounded-xl border border-border p-6 space-y-4">
             <div>
-              {loginMode === "credentials" ? (
-                <>
-                  <label className="block text-sm text-text-secondary mb-1.5">Email</label>
-                  <input
-                    type="email"
-                    value={loginEmail}
-                    onChange={(e) => setLoginEmail(e.target.value)}
-                    placeholder="admin@vellus.tech"
-                    className="w-full px-4 py-3 rounded-lg bg-midnight border border-border text-white placeholder-text-tertiary focus:outline-none focus:ring-2 focus:ring-electric mb-3"
-                    onKeyDown={(e) => e.key === "Enter" && handleLogin()}
-                  />
-                  <label className="block text-sm text-text-secondary mb-1.5">Senha</label>
-                  <input
-                    type="password"
-                    value={loginPassword}
-                    onChange={(e) => setLoginPassword(e.target.value)}
-                    placeholder="••••••••••••"
-                    className="w-full px-4 py-3 rounded-lg bg-midnight border border-border text-white placeholder-text-tertiary focus:outline-none focus:ring-2 focus:ring-electric"
-                    onKeyDown={(e) => e.key === "Enter" && handleLogin()}
-                  />
-                  <button
-                    onClick={() => setLoginMode("token")}
-                    className="text-xs text-text-tertiary hover:text-electric mt-2 underline"
-                  >
-                    Entrar com API Key
-                  </button>
-                </>
-              ) : (
-                <>
-                  <label className="block text-sm text-text-secondary mb-1.5">Admin API Key</label>
-                  <input
-                    type="password"
-                    value={apiKey}
-                    onChange={(e) => setApiKey(e.target.value)}
-                placeholder="argo-admin-..."
-                className="w-full rounded-lg border border-border bg-midnight px-4 py-2.5 text-text-primary placeholder:text-text-tertiary focus:border-electric focus:outline-none focus:ring-1 focus:ring-electric"
+              <label className="block text-sm text-text-secondary mb-1.5">Email</label>
+              <input
+                type="email"
+                value={loginEmail}
+                onChange={(e) => setLoginEmail(e.target.value)}
+                placeholder="admin@vellus.tech"
+                className="w-full px-4 py-3 rounded-lg bg-midnight border border-border text-white placeholder-text-tertiary focus:outline-none focus:ring-2 focus:ring-electric mb-3"
               />
-              <button
-                onClick={() => setLoginMode("credentials")}
-                className="text-xs text-text-tertiary hover:text-electric mt-2 underline"
-              >
-                Entrar com email e senha
-              </button>
-                </>
-              )}
+              <label className="block text-sm text-text-secondary mb-1.5">Senha</label>
+              <input
+                type="password"
+                value={loginPassword}
+                onChange={(e) => setLoginPassword(e.target.value)}
+                placeholder="••••••••••••"
+                className="w-full px-4 py-3 rounded-lg bg-midnight border border-border text-white placeholder-text-tertiary focus:outline-none focus:ring-2 focus:ring-electric"
+              />
             </div>
             {error && <p className="text-red-400 text-sm">{error}</p>}
             <button
               type="submit"
-              disabled={loading || (loginMode === "token" ? !apiKey : !loginEmail || !loginPassword)}
-              onClick={loginMode === "credentials" ? handleLogin : undefined}
+              disabled={loading || !loginEmail || !loginPassword}
               className="w-full bg-electric text-white rounded-lg py-2.5 font-semibold hover:bg-electric/90 disabled:opacity-50 cursor-pointer"
             >
               {loading ? t("login.authenticating") : t("login.enter")}
