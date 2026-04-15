@@ -365,7 +365,11 @@
       "email": "Professional email",
       "company": "Company",
       "accountName": "Account name",
-      "optional": "optional"
+      "optional": "optional",
+      "gender": "How should we address you?",
+      "genderMale": "Captain (he/him)",
+      "genderFemale": "Captain (she/her)",
+      "genderOther": "Captain (they/them)"
     },
     "summary": {
       "plan": "Plan",

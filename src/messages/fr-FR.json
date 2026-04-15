@@ -360,7 +360,11 @@
       "email": "Email professionnel",
       "company": "Entreprise",
       "accountName": "Nom du compte",
-      "optional": "optionnel"
+      "optional": "optionnel",
+      "gender": "Comment devons-nous vous adresser ?",
+      "genderMale": "Capitaine (il)",
+      "genderFemale": "Capitaine (elle)",
+      "genderOther": "Capitaine (neutre)"
     },
     "summary": {
       "plan": "Plan",
