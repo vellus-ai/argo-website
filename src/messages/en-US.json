@@ -430,14 +430,14 @@
     "taxDisclaimer": "Prices shown do not include applicable taxes or fees (such as VAT or sales tax), unless explicitly stated. Infrastructure based on KVM (Kernel-based Virtual Machine) on Google Cloud Platform."
   },
   "welcome": {
-    "noRecord": "No record found.",
-    "noSessionId": "Session not found. Please redo the checkout.",
-    "goToCheckout": "Go to checkout",
+    "noRecord": "No ship found at this port.",
+    "noSessionId": "Nautical chart not found. Plot a new course through checkout.",
+    "goToCheckout": "Return to the boarding port",
     "trialActivated": "Trial activated successfully!",
-    "preparingEnvironment": "Preparing your Command Bridge...",
-    "provisioningStatus": "We're setting up your environment. This takes a few seconds.",
-    "provisioningTimeout": "Provisioning is taking longer than expected. Check your email for credentials.",
-    "fetchError": "Could not verify status. Check your email for credentials.",
+    "preparingEnvironment": "Hoisting the sails...",
+    "provisioningStatus": "Your crew is boarding. The Bridge will be ready in a moment.",
+    "provisioningTimeout": "The voyage is taking longer than expected. Check your email — your access coordinates have already been sent.",
+    "fetchError": "We lost the lighthouse signal. Check your email — your access coordinates have already been sent.",
     "welcomeTitle": "Welcome aboard, Captain {firstName}!",
     "welcomeSubtitle": "Your crew is being prepared. Check your email for access credentials.",
     "credentials": {

@@ -430,14 +430,14 @@
     "trialBadge": "7 Tage kostenlos — jederzeit kundbar"
   },
   "welcome": {
-    "noRecord": "Kein Eintrag gefunden.",
-    "noSessionId": "Sitzung nicht gefunden. Bitte wiederholen Sie den Checkout.",
-    "goToCheckout": "Zum Checkout",
+    "noRecord": "Kein Schiff in diesem Hafen gefunden.",
+    "noSessionId": "Seekarte nicht gefunden. Planen Sie eine neue Route über den Checkout.",
+    "goToCheckout": "Zurück zum Einschiffungshafen",
     "trialActivated": "Testversion erfolgreich aktiviert!",
-    "preparingEnvironment": "Vorbereitung Ihrer Kommandobrücke...",
-    "provisioningStatus": "Wir richten Ihre Umgebung ein. Dies dauert einige Sekunden.",
-    "provisioningTimeout": "Die Bereitstellung dauert länger als erwartet. Überprüfen Sie Ihre E-Mail.",
-    "fetchError": "Status konnte nicht überprüft werden. Überprüfen Sie Ihre E-Mail.",
+    "preparingEnvironment": "Die Segel werden gehisst...",
+    "provisioningStatus": "Ihre Crew geht an Bord. Die Kommandobrücke wird in wenigen Augenblicken bereit sein.",
+    "provisioningTimeout": "Die Überfahrt dauert länger als erwartet. Prüfen Sie Ihre E-Mail — die Zugangsdaten wurden bereits gesendet.",
+    "fetchError": "Wir haben das Leuchtturmsignal verloren. Prüfen Sie Ihre E-Mail — die Zugangsdaten wurden bereits gesendet.",
     "welcomeTitle": "Willkommen an Bord, Kapitan {firstName}!",
     "welcomeSubtitle": "Ihre Besatzung wird vorbereitet. Überprüfen Sie Ihre E-Mail für die Zugangsdaten.",
     "credentials": {

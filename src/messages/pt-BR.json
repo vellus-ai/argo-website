@@ -430,14 +430,14 @@
     "taxDisclaimer": "Os preços exibidos não incluem impostos ou taxas aplicáveis (como IVA ou imposto sobre vendas), a menos que explicitamente indicado. Infraestrutura baseada em KVM (Kernel-based Virtual Machine) no Google Cloud Platform."
   },
   "welcome": {
-    "noRecord": "Nenhum registro encontrado.",
-    "noSessionId": "Sessão não encontrada. Por favor, refaça o checkout.",
-    "goToCheckout": "Ir para o checkout",
+    "noRecord": "Nenhum navio encontrado neste porto.",
+    "noSessionId": "Carta náutica não localizada. Trace uma nova rota pelo checkout.",
+    "goToCheckout": "Voltar ao porto de embarque",
     "trialActivated": "Trial ativado com sucesso!",
-    "preparingEnvironment": "Preparando sua Ponte de Comando...",
-    "provisioningStatus": "Estamos configurando seu ambiente. Isso leva alguns segundos.",
-    "provisioningTimeout": "O provisionamento está demorando mais que o esperado. Verifique seu email para as credenciais.",
-    "fetchError": "Não foi possível verificar o status. Verifique seu email para as credenciais.",
+    "preparingEnvironment": "Içando as velas...",
+    "provisioningStatus": "Sua tripulação está embarcando. Em instantes, a Ponte de Comando estará pronta.",
+    "provisioningTimeout": "A travessia está levando mais tempo que o previsto. Verifique seu email — as coordenadas de acesso já foram enviadas.",
+    "fetchError": "Perdemos o sinal do farol. Verifique seu email — as coordenadas de acesso já foram enviadas.",
     "welcomeTitle": "Bem-vindo a bordo, Capitão {firstName}!",
     "welcomeSubtitle": "Sua tripulação está sendo preparada. Verifique seu email para as credenciais de acesso.",
     "credentials": {
